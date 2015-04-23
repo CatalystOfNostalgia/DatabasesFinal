@@ -32,11 +32,12 @@ public class QueryGUI extends JFrame {
     private JTextField playerID2;
     private JTextField tournamentID;
     private JTextField gameID;
+    private JComboBox queryList;
 
     private static String driver ="com.mysql.jdbc.Driver" ;
     private static String server
             ="jdbc:mysql://localhost:3306/Assignment5";
-    private static String username = "guest";
+    private static String username = "user";
     private static String password = "password";
     private static Connection con=null;
 
@@ -144,7 +145,7 @@ public class QueryGUI extends JFrame {
                 "All players above a threshold in a statistics", "How many years all players have played for",
                 "Comparing two players", "Teams from the same location", "All games in a specific tournament"};
 
-        JComboBox queryList = new JComboBox(queryStrings);
+        queryList = new JComboBox(queryStrings);
         center.add(queryList);
 
         //button to select query
@@ -239,11 +240,12 @@ public class QueryGUI extends JFrame {
 
         JButton viewResult = new JButton("View Result");
         centerUpdate.add(viewResult);
+        final int index1 = index;
         viewResult.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String[] information = new String[9];   //0 - numPlayers, 1-numTeams, 2-statistic, 3-teamID, 4-playerID, 5-threshold, 6-playerID2, 7-tournamentID, 8-gameID
-                switch (index) {
+                switch (index1) {
                     case 0:
                         information[0] = numPlayers.getText();
                         information[2] = statisticList[statisticCombo.getSelectedIndex()];
@@ -294,7 +296,7 @@ public class QueryGUI extends JFrame {
                         break;
                 }
 
-                viewQuery(index, information);
+                viewQuery(index1, information);
             }
         });
 

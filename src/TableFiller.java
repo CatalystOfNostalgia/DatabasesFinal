@@ -64,10 +64,10 @@ public class TableFiller {
     public TableFiller() {
 
         //player data
-        playerNames = new String[100];
         //playerID = new int[100];
-        playerPositions = new String[100];
         playerTeamID = new int[100];
+        playerNames = new String[100];
+        playerPositions = new String[100];
 
         //team data
         //teamID = new int[10];
@@ -109,7 +109,7 @@ public class TableFiller {
 
         try {
             //initialize players and games
-            BufferedReader playerNameReader = new BufferedReader(new FileReader("names.txt"));
+            BufferedReader playerNameReader = new BufferedReader(new FileReader("lib//names.txt"));
             for (int i = 0; i < 100; i++) {
                 //players
                 playerNames[i] = playerNameReader.readLine();
@@ -131,10 +131,11 @@ public class TableFiller {
             }
 
             //initialize teams, tournaments and coaches
-            BufferedReader teamNameReader = new BufferedReader((new FileReader("teamnames.txt")));
-            BufferedReader locationReader = new BufferedReader(new FileReader("teamlocations.txt"));
-            BufferedReader coachReader = new BufferedReader(new FileReader("coachnames.txt"));
-            BufferedReader tournamentNameReader = new BufferedReader(new FileReader("tournamentnames.txt"));
+
+            BufferedReader teamNameReader = new BufferedReader((new FileReader("lib/teamnames.txt")));
+            BufferedReader locationReader = new BufferedReader(new FileReader("lib/teamlocations.txt"));
+            BufferedReader coachReader = new BufferedReader(new FileReader("lib/coachnames.txt"));
+            BufferedReader tournamentNameReader = new BufferedReader(new FileReader("lib/tournamentnames.txt"));
 
             for(int i = 0; i < 10; i++) {
                 //teams
@@ -240,7 +241,6 @@ public class TableFiller {
 
             //teams
             for (int i = 0; i < teamNames.length; i++) {
-                System.out.println(i);
                 instruction.execute("INSERT INTO TEAMS (name, location, wins, losses, coachID) values ('" +
                         teamNames[i] + "', '" + teamLocations[i] + "', " + teamWins[i] + ", " + teamLosses[i] +
                         ", " + teamCoachID[i] + ")");
@@ -251,7 +251,6 @@ public class TableFiller {
             //players and games
             for (int i = 0; i < playerNames.length; i++) {
                 //players
-                System.out.println((i % 10) + 1);
                 instruction.execute("INSERT INTO PLAYERS (name, position, teamID) values ('" + playerNames[i] +
                         "', '" + playerPositions[i] + "', " + playerTeamID[i] + ")");
 

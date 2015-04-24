@@ -12,11 +12,11 @@ public class DatabaseConnector {
 
     private static final String DATABASE_NAME = "FrisbeeTest";
     private static final String DRIVER = "com.mysql.jdbc.Driver"; /*JDBC driver for mysql*/
-    private static final String SERVER = "jdbc:mysql://localhost:3306/";
-    private static final String GUEST = "";
-    private static final String GUESTPASS ="";
-    private static final String ADMIN = "";
-    private static final String ADMINPASS = "";
+    private static final String SERVER = "jdbc:mysql://localhost:3306/FrisbeeTest";
+    private static final String GUEST = "user";
+    private static final String GUESTPASS ="password";
+    private static final String ADMIN = "user";
+    private static final String ADMINPASS = "password";
     private USERTYPE type;
 
     private Statement statement;

@@ -12,8 +12,11 @@ public class DatabaseConnector {
 
     private static final String DATABASE_NAME = "FrisbeeTest";
     private static final String DRIVER = "com.mysql.jdbc.Driver"; /*JDBC driver for mysql*/
-    private static final String SERVER_USER = "jdbc:mysql://localhost:3306/" + DATABASE_NAME + "?user=user&password=password";
-    private static final String SERVER_ADMIN = "jdbc:mysql://localhost:3306/" + DATABASE_NAME + "?user=admin&passsword=password";
+    private static final String SERVER = "jdbc:mysql://localhost:3306/";
+    private static final String GUEST = "";
+    private static final String GUESTPASS ="";
+    private static final String ADMIN = "";
+    private static final String ADMINPASS = "";
     private USERTYPE type;
 
     private Statement statement;
@@ -23,9 +26,9 @@ public class DatabaseConnector {
             Class.forName(DRIVER);
             Connection conn;
             if(user == USERTYPE.GUEST){
-                conn = DriverManager.getConnection(SERVER_USER);
+                conn = DriverManager.getConnection(SERVER, GUEST, GUESTPASS);
             }else{
-                conn = DriverManager.getConnection(SERVER_ADMIN);
+                conn = DriverManager.getConnection(SERVER, ADMIN, ADMINPASS);
             }
 
             statement = conn.createStatement();
@@ -389,7 +392,17 @@ public class DatabaseConnector {
         statement.executeUpdate(updatePlayer);
     }
 
+    public void updateTournaments(int tournamentID, String name, String location, String date) throws Exception{
+        String updateTournament = "UPDATE tournaments SET name = \'" + name + "\', location = \'" + location + "\' + date = \'" + date +
+                "\' WHERE tournamentID = " + tournamentID;
+        statement.executeUpdate(updateTournament);
+    }
 
+    public void updateGames(int gameId, String score, String start, String end, int tournamentID) throws Exception{
+        String updateGame = "UPDATE games SET score = \'" + score + "\', startTime = \'" + start + "\', endTime = \'" + end + "\'," +
+                "tournamentId = " + tournamentID + " WHERE gameID = " + gameId;
+        statement.executeUpdate(updateGame);
+    }
 
     //public void updatePlaysIn(int teamID, int gameID)
     /*

@@ -20,7 +20,7 @@ public class DatabaseConnector {
     private USERTYPE type;
 
     private Statement statement;
-
+    private Statement statement2;
     public DatabaseConnector(USERTYPE user) throws Exception{
             this.type = user;
             Class.forName(DRIVER);
@@ -32,6 +32,7 @@ public class DatabaseConnector {
             }
 
             statement = conn.createStatement();
+            statement2 = conn.createStatement();
     }
 
     /*
@@ -357,13 +358,13 @@ public class DatabaseConnector {
         String updatePlaysIn = "INSERT INTO PLAYIN(gameID, teamID) values (" + gameID + "," + team1 + ")";
         statement.executeUpdate(updatePlaysIn);
         updatePlaysIn = "INSERT INTO PLAYIN(gameID, teamID) values (" + gameID + "," + team2 + ")";
-
+        statement.executeUpdate(updatePlaysIn);
         rs = statement.executeQuery("Select playerID from Players where teamID = \'" + team1 + "\' or teamID = \'" + team2 + "\'");
 
         while(rs.next()){
             String updatePartIn = "INSERT INTO PARTIN(playerID, gameID, drops, assists, goals, pointsPlayed, throwaways) values (" +
                     rs.getInt(1) + "," + gameID + ", 0, 0, 0, 0, 0)";
-            statement.executeUpdate(updatePartIn);
+            statement2.executeUpdate(updatePartIn);
         }
 
     }

@@ -37,6 +37,14 @@ public class QueryGUI extends JFrame {
     private JComboBox hOrC;
     private JTextField nameInput;
     private JComboBox teamIDComboBox;
+    private DatabaseConnector databaseAdmin;
+    private DatabaseConnector database;
+    private JTextField score;
+    private JTextField startTime;
+    private JTextField endTime;
+    private JComboBox tournamentIDBox;
+    private JTextField team1;
+    private JTextField team2;
 
     private static String driver ="com.mysql.jdbc.Driver" ;
     private static String server
@@ -231,22 +239,6 @@ public class QueryGUI extends JFrame {
         buttons.add(aParticipatesIn);
         centerUpdate.add(buttons);
 
-
-        /*try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
-            ResultSet rs = database.getPlayer("*");
-            DefaultListModel model = getListInfo(rs);
-
-            JList queryResult = new JList(model);
-            JScrollPane scroll = new JScrollPane(queryResult);
-            centerUpdate.add(scroll);
-            frame.setVisible(true);
-        catch(Exception e){
-            System.out.println(e.toString());
-        }
-        finally{
-        } */
-
         //button to go back to original screen
         JButton back = new JButton("Back");
         back.addActionListener(new ActionListener() {
@@ -266,24 +258,19 @@ public class QueryGUI extends JFrame {
         frame.remove(centerUpdate);
         centerUpdate = new JPanel(new GridLayout(3,2));
 
-        //JTextField name = new JTextField("Name");
-       //name.setEditable(false);
         nameInput = new JTextField("Name");
         hOrC = new JComboBox(new String[] {"Handler", "Cutter"});
 
-        //FIX THIS TO FIND ALL THE TEAMIDS IN THE TABLE
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
-            ResultSet rs = database.getTeam("*");
-            ResultSetMetaData mdata = rs.getMetaData();
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getTeam("*");
 
             ArrayList<Integer> idList = new ArrayList<Integer>();
             while (rs.next()){
                 idList.add(rs.getInt("teamID"));
             }
-            
+
             teamIDComboBox = new JComboBox(idList.toArray());
-            //centerUpdate.add(name);
             centerUpdate.add(nameInput);
             centerUpdate.add(hOrC);
             centerUpdate.add(teamIDComboBox);
@@ -310,9 +297,14 @@ public class QueryGUI extends JFrame {
                         playerPosition = "Cutter";
 
                     int teamId = teamIDComboBox.getSelectedIndex();
-
-
-                    //database.addPlayer(playerName, playerPosition, teamId);
+                    try {
+                        databaseAdmin.insertPlayer(playerName, playerPosition, teamId);
+                    }
+                    catch(Exception e2){
+                        System.out.println(e.toString());
+                    }
+                    finally {
+                    }
                 }
             });
 
@@ -327,10 +319,80 @@ public class QueryGUI extends JFrame {
         }
         finally{
         }
-        String[] teamIDOptions = new String[] {"0", "1", "2", "3", "4", "5"};
     }
 
     public void addGame(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        team1 = new JTextField("Team 1");
+        team2 = new JTextField("Team 2");
+        score = new JTextField("Score");
+        startTime = new JTextField("Start Time");
+        endTime = new JTextField("End Time");
+
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getTournament("*");
+
+            ArrayList<Integer> tournamentIDList = new ArrayList<Integer>();
+            while (rs.next()){
+                tournamentIDList.add(rs.getInt("tournamentID"));
+            }
+
+            tournamentIDBox = new JComboBox(tournamentIDList.toArray());
+            centerUpdate.add(team1);
+            centerUpdate.add(team2);
+            centerUpdate.add(score);
+            centerUpdate.add(startTime);
+            centerUpdate.add(endTime);
+            centerUpdate.add(tournamentIDBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton add = new JButton("Add");
+            add.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String team1Text = team1.getText();
+                    String team2Text = team2.getText();
+                    String scoreText = score.getText();
+                    String startTimeText = startTime.getText();
+                    String endtimeText = endTime.getText();
+                    int tournamentIDIndex = tournamentIDBox.getSelectedIndex();
+
+                    int teamId = teamIDComboBox.getSelectedIndex();
+                    try {
+                        databaseAdmin.insertGame(team1Text, team2Text, Integer.toString(tournamentIDIndex), scoreText, startTimeText, endtimeText);
+                    }
+                    catch(Exception e2){
+                        System.out.println(e.toString());
+                    }
+                    finally {
+                    }
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(add);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
+        finally{
+        }
 
     }
 
@@ -500,7 +562,7 @@ public class QueryGUI extends JFrame {
 
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             Class.forName(driver);
             con= DriverManager.getConnection(server, username, password);
             Statement instruction = con.createStatement();
@@ -616,7 +678,7 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(chosenTable);
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             ResultSet rs = database.getPlayer("*");
             DefaultListModel model = getListInfo(rs);
 
@@ -654,7 +716,7 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(chosenTable);
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             ResultSet rs = database.getTeam("*");
             DefaultListModel model = getListInfo(rs);
 
@@ -692,7 +754,7 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(chosenTable);
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             ResultSet rs = database.getCoach("*");
             DefaultListModel model = getListInfo(rs);
 
@@ -730,7 +792,7 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(chosenTable);
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             ResultSet rs = database.getTournament("*");
             DefaultListModel model = getListInfo(rs);
 
@@ -768,7 +830,7 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(chosenTable);
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             ResultSet rs = database.getGame("*");
             DefaultListModel model = getListInfo(rs);
 
@@ -805,7 +867,7 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(chosenTable);
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             ResultSet rs = database.participatesIn("*", "*");
             DefaultListModel model = getListInfo(rs);
 
@@ -842,7 +904,7 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(chosenTable);
 
         try{
-            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
             ResultSet rs = database.playIn("*", "*");
             DefaultListModel model = getListInfo(rs);
 

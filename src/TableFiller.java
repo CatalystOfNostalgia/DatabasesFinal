@@ -12,7 +12,7 @@ public class TableFiller {
     private static String server = "jdbc:mysql://localhost:3306";
 
     //credentials
-    private static String user = "guest";
+    private static String user = "user";
     private static String pass = "password";
     private static Connection con = null;
 

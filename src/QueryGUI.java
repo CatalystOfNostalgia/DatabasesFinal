@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.util.ArrayList;
 
 
 /**
@@ -33,6 +34,9 @@ public class QueryGUI extends JFrame {
     private JTextField tournamentID;
     private JTextField gameID;
     private JComboBox queryList;
+    private JComboBox hOrC;
+    private JTextField nameInput;
+    private JComboBox teamIDComboBox;
 
     private static String driver ="com.mysql.jdbc.Driver" ;
     private static String server
@@ -167,6 +171,182 @@ public class QueryGUI extends JFrame {
     }
 
     public void adminDisplay(){
+        frame.setVisible(false);
+        frame.remove(center);
+        centerUpdate = new JPanel();
+
+        JTextField chosenTable = new JTextField("Admin");
+        chosenTable.setEditable(false);
+        centerUpdate.add(chosenTable);
+
+        JButton aPlayer = new JButton("Add Player");
+        aPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addPlayer();
+            }
+        });
+        JButton aGame = new JButton("Add Game");
+        aGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addGame();
+            }
+        });
+        JButton aTournament = new JButton("Add Tournament");
+        aTournament.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTournament();
+            }
+        });
+        JButton aCoach = new JButton("Add Coach");
+        aCoach.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addCoach();
+            }
+        });
+        JButton aTeam = new JButton("Add Team");
+        aTeam.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addTeam();
+            }
+        });
+        JButton aParticipatesIn = new JButton("Add Participates In");
+        aParticipatesIn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                addParticipatesIn();
+            }
+        });
+
+        JPanel buttons = new JPanel(new GridLayout(3,3));
+        buttons.add(aPlayer);
+        buttons.add(aGame);
+        buttons.add(aTournament);
+        buttons.add(aCoach);
+        buttons.add(aTeam);
+        buttons.add(aParticipatesIn);
+        centerUpdate.add(buttons);
+
+
+        /*try{
+            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = database.getPlayer("*");
+            DefaultListModel model = getListInfo(rs);
+
+            JList queryResult = new JList(model);
+            JScrollPane scroll = new JScrollPane(queryResult);
+            centerUpdate.add(scroll);
+            frame.setVisible(true);
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
+        finally{
+        } */
+
+        //button to go back to original screen
+        JButton back = new JButton("Back");
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainScreen();
+            }
+        });
+        centerUpdate.add(back);
+        frame.add(centerUpdate);
+        frame.setVisible(true);
+
+    }
+
+    public void addPlayer(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        //JTextField name = new JTextField("Name");
+       //name.setEditable(false);
+        nameInput = new JTextField("Name");
+        hOrC = new JComboBox(new String[] {"Handler", "Cutter"});
+
+        //FIX THIS TO FIND ALL THE TEAMIDS IN THE TABLE
+        try{
+            DatabaseConnector database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
+            ResultSet rs = database.getTeam("*");
+            ResultSetMetaData mdata = rs.getMetaData();
+
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            while (rs.next()){
+                idList.add(rs.getInt("teamID"));
+            }
+            
+            teamIDComboBox = new JComboBox(idList.toArray());
+            //centerUpdate.add(name);
+            centerUpdate.add(nameInput);
+            centerUpdate.add(hOrC);
+            centerUpdate.add(teamIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton add = new JButton("Add");
+            add.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String playerName = nameInput.getText();
+                    int playerPositionIndex = hOrC.getSelectedIndex();
+                    String playerPosition;
+                    if (playerPositionIndex == 0)
+                        playerPosition = "Handler";
+                    else
+                        playerPosition = "Cutter";
+
+                    int teamId = teamIDComboBox.getSelectedIndex();
+
+
+                    //database.addPlayer(playerName, playerPosition, teamId);
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(add);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e){
+            System.out.println(e.toString());
+        }
+        finally{
+        }
+        String[] teamIDOptions = new String[] {"0", "1", "2", "3", "4", "5"};
+    }
+
+    public void addGame(){
+
+    }
+
+    public void addTournament(){
+
+    }
+
+    public void addCoach(){
+
+    }
+
+    public void addTeam(){
+
+    }
+
+    public void addParticipatesIn(){
 
     }
 

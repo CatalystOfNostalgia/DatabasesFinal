@@ -43,8 +43,8 @@ public class QueryGUI extends JFrame {
     private JTextField startTime;
     private JTextField endTime;
     private JComboBox tournamentIDBox;
-    private JTextField team1;
-    private JTextField team2;
+    private JComboBox team1Box;
+    private JComboBox team2Box;
 
     private static String driver ="com.mysql.jdbc.Driver" ;
     private static String server
@@ -296,12 +296,13 @@ public class QueryGUI extends JFrame {
                     else
                         playerPosition = "Cutter";
 
-                    int teamId = teamIDComboBox.getSelectedIndex();
+                    int teamId = teamIDComboBox.getSelectedIndex() + 1;
                     try {
                         databaseAdmin.insertPlayer(playerName, playerPosition, teamId);
                     }
                     catch(Exception e2){
-                        System.out.println(e.toString());
+                        System.out.println(e2.toString());
+                        System.out.println("4");
                     }
                     finally {
                     }
@@ -314,8 +315,9 @@ public class QueryGUI extends JFrame {
             frame.setVisible(true);
 
         }
-        catch(Exception e){
-            System.out.println(e.toString());
+        catch(Exception e1){
+            e1.toString();
+            System.out.println("2342");
         }
         finally{
         }
@@ -326,8 +328,6 @@ public class QueryGUI extends JFrame {
         frame.remove(centerUpdate);
         centerUpdate = new JPanel(new GridLayout(3,2));
 
-        team1 = new JTextField("Team 1");
-        team2 = new JTextField("Team 2");
         score = new JTextField("Score");
         startTime = new JTextField("Start Time");
         endTime = new JTextField("End Time");
@@ -342,9 +342,18 @@ public class QueryGUI extends JFrame {
                 tournamentIDList.add(rs.getInt("tournamentID"));
             }
 
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            while (rs.next()){
+                idList.add(rs.getInt("teamID"));
+            }
+
+            teamIDComboBox = new JComboBox(idList.toArray());
+            team1Box = new JComboBox(idList.toArray());
+            team2Box = new JComboBox(idList.toArray());
+
             tournamentIDBox = new JComboBox(tournamentIDList.toArray());
-            centerUpdate.add(team1);
-            centerUpdate.add(team2);
+            centerUpdate.add(teamIDComboBox);
+            centerUpdate.add(teamIDComboBox);
             centerUpdate.add(score);
             centerUpdate.add(startTime);
             centerUpdate.add(endTime);
@@ -363,19 +372,19 @@ public class QueryGUI extends JFrame {
             add.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    String team1Text = team1.getText();
-                    String team2Text = team2.getText();
+                    int team1Text = team1Box.getSelectedIndex() + 1;
+                    int team2Text = team2Box.getSelectedIndex() + 1;
                     String scoreText = score.getText();
                     String startTimeText = startTime.getText();
                     String endtimeText = endTime.getText();
-                    int tournamentIDIndex = tournamentIDBox.getSelectedIndex();
+                    int tournamentIDIndex = tournamentIDBox.getSelectedIndex() + 1;
 
-                    int teamId = teamIDComboBox.getSelectedIndex();
                     try {
-                        databaseAdmin.insertGame(team1Text, team2Text, Integer.toString(tournamentIDIndex), scoreText, startTimeText, endtimeText);
+                        databaseAdmin.insertGame(Integer.toString(team1Text), Integer.toString(team2Text), Integer.toString(tournamentIDIndex), scoreText, startTimeText, endtimeText);
                     }
                     catch(Exception e2){
-                        System.out.println(e.toString());
+                        System.out.println(e2.toString());
+                        System.out.println("1");
                     }
                     finally {
                     }
@@ -388,8 +397,9 @@ public class QueryGUI extends JFrame {
             frame.setVisible(true);
 
         }
-        catch(Exception e){
-            System.out.println(e.toString());
+        catch(Exception e3){
+            System.out.println(e3.toString());
+            System.out.println("2");
         }
         finally{
         }

@@ -308,7 +308,7 @@ public class DatabaseConnector {
      * @return          if the query was successful
      */
     public void insertPlayer(String name, String position, int teamID) throws Exception{
-        statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values ("  +
+        statement.execute("INSERT INTO PLAYERS (name, position, teamID) values ("  +
                 "\'" + name + "\', \'" + position + "\', " + teamID + ")");
     }
 

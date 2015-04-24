@@ -129,16 +129,16 @@ public class DatabaseConnector {
     public ResultSet playIn(String game, String player) throws Exception{
             String query;
             if(game == null && player == null){
-                query = "Select * from playin";
+                query = "Select * from participateIn";
             }
             else if(player == null){
-                query = "Select * from playin where gameid = \'" + game + "\'";
+                query = "Select * from participateIn where gameid = \'" + game + "\'";
             }
             else if(game == null){
-                query = "Select * from playin where playerID = \'" + player + "\'";
+                query = "Select * from participateIn where playerID = \'" + player + "\'";
             }
             else{
-                query = "SELECT * FROM playin";
+                query = "SELECT * FROM participateIn where gameid = \'" + game + "\' and playerid = \'" + player + "\'";
             }
             return statement.executeQuery(query);
     }
@@ -299,25 +299,99 @@ public class DatabaseConnector {
 
     /**
      * inserts a player into the database
-     * @param playerID  the id of the player
      * @param name      the name of the player
      * @param position  the position of the player
      * @param teamID    the team the player is on
      * @return          if the query was successful
      */
-    public boolean insertPlayer(int playerID, String name, String position, int teamID){
-
-        try {
-            statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values (" + playerID +
-                    ", '" + name + "', '" + position + "', " + teamID + ")");
-        }
-        catch (SQLException e){
-            System.out.println(e.toString());
-            return false;
-        }
-        return true;
+    public void insertPlayer(String name, String position, int teamID) throws Exception{
+        statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values ("  +
+                "\'" + name + "\', \'" + position + "\', " + teamID + ")");
     }
 
+    /**
+     *
+     * @param name The team name
+     * @param location The location of the team
+     * @param wins  Number of wins
+     * @param losses Number of losses
+     * @param coachID Coach of the team
+     * @throws Exception    Catches any SQL Exception
+     */
+    public void insertTeam(String name, String location, int wins, int losses, int coachID) throws Exception{
+        String update = "INSERT INTO TEAMS(name, location, wins, losses, caochID) values (" +  "\'" +
+                name + "\' , \'" + location + "\' , " + wins + "," + losses + "," + coachID + ")";
+        statement.executeUpdate(update);
+    }
+
+    /**
+     * @param name          Name of the coach
+     * @throws Exception    Catches any SQL exception
+     */
+    public void insertCoach(String name) throws Exception{
+        String update = "INSERT INTO COACHES(name) values (\'" + name + "\')";
+        statement.executeUpdate(update);
+    }
+
+    public void insertTournament(String name, String location, String date) throws Exception{
+        String update = "INSERT INTO TOURNAMENTS(name, location, date) values (\' " + name + "\', \'" + location + "\', " + date + ")";
+        statement.executeUpdate(update);
+    }
+
+    /**
+     * Create a game, auto updates Games, PlaysIn, ParticipatesIn
+     */
+    public void insertGame(String team1, String team2, String tournamentID, String score, String startTime, String endTime) throws Exception{
+        String updateGames = "INSERT INTO GAMES(score, startTime, endTime, tournamentID) values ( \'" + score + "\', \'" + startTime + "\' , \'" +
+                endTime + "\'," + tournamentID + ")";
+        statement.executeQuery(updateGames);
+        ResultSet rs = statement.executeQuery("Select gameID " +
+                "from Games "
+                + "ORDER BY gameID desc "
+                + "LIMIT 1");
+        rs.next();
+        String gameID = rs.getString(1);
+        String updatePlaysIn = "INSERT INTO PLAYIN(gameID, teamID) values (" + gameID + "," + team1 + ")";
+        statement.executeUpdate(updatePlaysIn);
+        updatePlaysIn = "INSERT INTO PLAYIN(gameID, teamID) values (" + gameID + "," + team2 + ")";
+
+        rs = statement.executeQuery("Select playerID from Players where teamID = \'" + team1 + "\' or teamID = \'" + team2 + "\'");
+
+        while(rs.next()){
+            String updatePartIn = "INSERT INTO PARTIN(playerID, gameID, drops, assists, goals, pointsPlayed, throwaways) values (" +
+                    rs.getInt(1) + "," + gameID + ", 0, 0, 0, 0, 0)";
+            statement.executeUpdate(updatePartIn);
+        }
+
+    }
+
+    public void updatePart(int playerID, int gameID, int drops, int assists, int goals, int pointsPlayed, int throwaways) throws Exception{
+        String updatePlayer = "UPDATE participatesIn SET drops = " + drops + ", assists = " + assists + ", goals =" + goals +
+                ", pointsPlayed = " + pointsPlayed + ", throwaways = " + throwaways + "WHERE playerID = " + playerID + " and gameID = " +
+                gameID;
+        statement.executeUpdate(updatePlayer);
+
+    }
+
+    public void updateTeam(int teamId, String name, String location, int wins, int losses, int coachID) throws Exception{
+        String updateTeam = "UPDATE teams SET name = \'" + name + "\', location = \'" + location + ", wins = " + wins + ", losses ="
+                + losses + ", coachID = " + coachID + " WHERE teamID = " + teamId;
+        statement.executeUpdate(updateTeam);
+    }
+
+    public void updateCoach(int coachID, String name) throws Exception{
+        String updateCoach = "UPDATE coaches set name = \'" + name + "\' WHERE coachID = " + coachID;
+        statement.executeUpdate(updateCoach);
+    }
+
+    public void updatePlayer(int playerID, String name, String position, int teamID) throws Exception{
+        String updatePlayer = "UPDATE players SET name = \'" + name + "\', teamID = " + teamID + " WHERE playerID = " + playerID;
+        statement.executeUpdate(updatePlayer);
+    }
+
+
+
+    //public void updatePlaysIn(int teamID, int gameID)
     /*
     * Utility function for iterating through a result set. Outputs to commandline for now though.
     * */

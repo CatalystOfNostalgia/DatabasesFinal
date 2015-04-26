@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 
@@ -45,6 +46,25 @@ public class QueryGUI extends JFrame {
     private JComboBox tournamentIDBox;
     private JComboBox team1Box;
     private JComboBox team2Box;
+    private JTextField locationInput;
+    private JTextField dateInput;
+    private JTextField winsInput;
+    private JTextField lossesInput;
+    private JComboBox coachIDComboBox;
+    private JComboBox playerIDComboBox;
+    private JTextField playerIDtextBox;
+    private JTextField positionInput;
+    private JComboBox gameIDComboBox;
+    private JTextField gameIDTextBox;
+    private JTextField coachIDTextBox;
+    private JTextField teamIDTextBox;
+    private JTextField dropsTextBox;
+    private JTextField assistsTextBox;
+    private JTextField goalsTextBox;
+    private JTextField pointsPlayedTextBox;
+    private JTextField throwawaysTextBox;
+
+
 
     private static String driver ="com.mysql.jdbc.Driver" ;
     private static String server
@@ -187,6 +207,51 @@ public class QueryGUI extends JFrame {
         chosenTable.setEditable(false);
         centerUpdate.add(chosenTable);
 
+        JButton insertButton = new JButton("Insert");
+        insertButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                adminDisplayAdd();
+            }
+        });
+
+        JButton updateButton = new JButton("Update");
+        updateButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                adminDisplayUpdate();
+            }
+        });
+
+
+        JPanel buttons = new JPanel(new GridLayout(3,3));
+        buttons.add(insertButton);
+        buttons.add(updateButton);
+        centerUpdate.add(buttons);
+
+        //button to go back to original screen
+        JButton back = new JButton("Back");
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainScreen();
+            }
+        });
+        centerUpdate.add(back);
+        frame.add(centerUpdate);
+        frame.setVisible(true);
+
+    }
+
+    public void adminDisplayAdd(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel();
+
+        JTextField chosenTable = new JTextField("Admin: Insert");
+        chosenTable.setEditable(false);
+        centerUpdate.add(chosenTable);
+
         JButton aPlayer = new JButton("Add Player");
         aPlayer.addActionListener(new ActionListener() {
             @Override
@@ -222,13 +287,6 @@ public class QueryGUI extends JFrame {
                 addTeam();
             }
         });
-        JButton aParticipatesIn = new JButton("Add Participates In");
-        aParticipatesIn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                addParticipatesIn();
-            }
-        });
 
         JPanel buttons = new JPanel(new GridLayout(3,3));
         buttons.add(aPlayer);
@@ -236,7 +294,82 @@ public class QueryGUI extends JFrame {
         buttons.add(aTournament);
         buttons.add(aCoach);
         buttons.add(aTeam);
-        buttons.add(aParticipatesIn);
+        centerUpdate.add(buttons);
+
+        //button to go back to original screen
+        JButton back = new JButton("Back");
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainScreen();
+            }
+        });
+        centerUpdate.add(back);
+        frame.add(centerUpdate);
+        frame.setVisible(true);
+
+
+    }
+
+    public void adminDisplayUpdate(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel();
+
+        JTextField chosenTable = new JTextField("Admin: Update");
+        chosenTable.setEditable(false);
+        centerUpdate.add(chosenTable);
+
+        JButton uPlayer = new JButton("Update Player");
+        uPlayer.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updatePlayer();
+            }
+        });
+        JButton uGame = new JButton("Update Game");
+        uGame.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateGame();
+            }
+        });
+        JButton uTournament = new JButton("Update Tournament");
+        uTournament.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTournament();
+            }
+        });
+        JButton uCoach = new JButton("Update Coach");
+        uCoach.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateCoach();
+            }
+        });
+        JButton uTeam = new JButton("Update Team");
+        uTeam.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateTeam();
+            }
+        });
+        JButton uParticipatesIn = new JButton("Update Participates In");
+        uParticipatesIn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                updateParticipatesIn();
+            }
+        });
+
+        JPanel buttons = new JPanel(new GridLayout(3,3));
+        buttons.add(uPlayer);
+        buttons.add(uGame);
+        buttons.add(uTournament);
+        buttons.add(uCoach);
+        buttons.add(uTeam);
+        buttons.add(uParticipatesIn);
         centerUpdate.add(buttons);
 
         //button to go back to original screen
@@ -252,7 +385,6 @@ public class QueryGUI extends JFrame {
         frame.setVisible(true);
 
     }
-
     public void addPlayer(){
         frame.setVisible(false);
         frame.remove(centerUpdate);
@@ -271,6 +403,8 @@ public class QueryGUI extends JFrame {
             }
 
             teamIDComboBox = new JComboBox(idList.toArray());
+            teamIDComboBox.setRenderer(new MyComboBoxRenderer("teamID"));
+            teamIDComboBox.setSelectedIndex(-1);
             centerUpdate.add(nameInput);
             centerUpdate.add(hOrC);
             centerUpdate.add(teamIDComboBox);
@@ -338,22 +472,30 @@ public class QueryGUI extends JFrame {
             ResultSet rs = databaseAdmin.getTournament("*");
 
             ArrayList<Integer> tournamentIDList = new ArrayList<Integer>();
+
             while (rs.next()){
                 tournamentIDList.add(rs.getInt("tournamentID"));
             }
+            rs.close();
 
+            ResultSet rs2 = databaseAdmin.getTeam("*");
             ArrayList<Integer> idList = new ArrayList<Integer>();
-            while (rs.next()){
-                idList.add(rs.getInt("teamID"));
+            while (rs2.next()){
+                idList.add(rs2.getInt("teamID"));
             }
 
-            teamIDComboBox = new JComboBox(idList.toArray());
             team1Box = new JComboBox(idList.toArray());
+            team1Box.setRenderer(new MyComboBoxRenderer("team1ID"));
+            team1Box.setSelectedIndex(-1);
             team2Box = new JComboBox(idList.toArray());
+            team2Box.setRenderer(new MyComboBoxRenderer("team2ID"));
+            team2Box.setSelectedIndex(-1);
 
             tournamentIDBox = new JComboBox(tournamentIDList.toArray());
-            centerUpdate.add(teamIDComboBox);
-            centerUpdate.add(teamIDComboBox);
+            tournamentIDBox.setRenderer(new MyComboBoxRenderer("tournamentID"));
+            tournamentIDBox.setSelectedIndex(-1);
+            centerUpdate.add(team1Box);
+            centerUpdate.add(team2Box);
             centerUpdate.add(score);
             centerUpdate.add(startTime);
             centerUpdate.add(endTime);
@@ -407,19 +549,1015 @@ public class QueryGUI extends JFrame {
     }
 
     public void addTournament(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        nameInput = new JTextField("Name");
+        locationInput = new JTextField("Location");
+        dateInput = new JTextField("Date");
+        centerUpdate.add(nameInput);
+        centerUpdate.add(locationInput);
+        centerUpdate.add(dateInput);
+
+        //button to go back to original screen
+        JButton back = new JButton("Back");
+        back.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainScreen();
+            }
+        });
+
+        JButton add = new JButton("Add");
+        add.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String nameText = nameInput.getText();
+                String locationText = locationInput.getText();
+                String dateText = dateInput.getText();
+
+                try {
+                    databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+                    /*SimpleDateFormat from = new SimpleDateFormat("dd/MM/yyyy");
+                    SimpleDateFormat to = new SimpleDateFormat("yyyy-MM-dd");
+
+                    Date date = new java.sql.Date(from.parse(dateText).getTime());
+                    String mysqlDate = to.format(date);
+
+                    System.out.println(mysqlDate);*/
+                    databaseAdmin.insertTournament(nameText, locationText, "1993-11-12");
+                }
+                catch(Exception e2){
+                    System.out.println(e2.toString());
+                    System.out.println("1");
+                }
+                finally {
+                }
+            }
+        });
+
+        centerUpdate.add(back);
+        centerUpdate.add(add);
+        frame.add(centerUpdate);
+        frame.setVisible(true);
+
 
     }
 
     public void addCoach(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        nameInput = new JTextField("Name");
+        try {
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+
+            centerUpdate.add(nameInput);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton add = new JButton("Add");
+            add.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String coachName = nameInput.getText();
+                    try {
+                        databaseAdmin.insertCoach(coachName);
+
+                    } catch (Exception e2) {
+                        System.out.println(e2.toString());
+                        System.out.println("1");
+                    } finally {
+                    }
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(add);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+        }
+        catch(Exception e3){
+            System.out.println(e3.toString());
+            System.out.println("2");
+        }
+        finally{
+        }
 
     }
 
     public void addTeam(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        nameInput = new JTextField("Name");
+        locationInput = new JTextField("Location");
+        winsInput = new JTextField("Wins");
+        lossesInput = new JTextField("Losses");
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getCoach("*");
+
+            ArrayList<Integer> coachList = new ArrayList<Integer>();
+            while (rs.next()){
+                coachList.add(rs.getInt("coachID"));
+            }
+
+            coachIDComboBox = new JComboBox(coachList.toArray());
+            coachIDComboBox.setRenderer(new MyComboBoxRenderer("coachID"));
+            coachIDComboBox.setSelectedIndex(-1);
+            centerUpdate.add(nameInput);
+            centerUpdate.add(locationInput);
+            centerUpdate.add(winsInput);
+            centerUpdate.add(lossesInput);
+            centerUpdate.add(coachIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton add = new JButton("Add");
+            add.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    String name = nameInput.getText();
+                    String location = locationInput.getText();
+                    int wins = Integer.parseInt(winsInput.getText());
+                    int losses = Integer.parseInt(lossesInput.getText());
+
+                    int coachId = coachIDComboBox.getSelectedIndex() + 1;
+
+                    try {
+                        databaseAdmin.insertTeam(name, location, wins, losses, coachId);
+                    }
+                    catch(Exception e2){
+                        System.out.println(e2.toString());
+                        System.out.println("4");
+                    }
+                    finally {
+                    }
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(add);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e1){
+            System.out.println(e1.toString());
+            System.out.println("2342");
+        }
+        finally{
+        }
+    }
+
+    public void updatePlayer(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getPlayer("*");
+
+            ArrayList<Integer> playerIDList = new ArrayList<Integer>();
+            while (rs.next()){
+                playerIDList.add(rs.getInt("playerID"));
+            }
+
+            playerIDComboBox = new JComboBox(playerIDList.toArray());
+            playerIDComboBox.setRenderer(new MyComboBoxRenderer("playerID"));
+            playerIDComboBox.setSelectedIndex(-1);
+            centerUpdate.add(playerIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton pickPlayer = new JButton("Pick Player");
+            pickPlayer.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updatePlayerClick();
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(pickPlayer);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e1){
+            System.out.println(e1.toString());
+            System.out.println("2342");
+        }
+        finally{
+        }
+    }
+
+    public void updatePlayerClick(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        int playerID = playerIDComboBox.getSelectedIndex() + 1;
+        try {
+
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getPlayer(Integer.toString(playerID));
+
+
+            rs.next();
+            String playerIDstr = rs.getString(1);
+            String name = rs.getString(2);
+            String position = rs.getString(3);
+            String teamID = rs.getString(4);
+
+            rs.close();
+
+            playerIDtextBox = new JTextField(playerIDstr);
+            playerIDtextBox.setEditable(false);
+
+            nameInput = new JTextField(name);
+            positionInput = new JTextField(position);
+
+            ResultSet rs2 = databaseAdmin.getTeam("*");
+
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            while (rs2.next()){
+                idList.add(rs2.getInt("teamID"));
+            }
+
+            teamIDComboBox = new JComboBox(idList.toArray());
+            //teamIDComboBox.setRenderer(new MyComboBoxRenderer("teamID"));
+            teamIDComboBox.setSelectedIndex(Integer.parseInt(teamID));
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton updateButton = new JButton("Update");
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int playerID = Integer.parseInt(playerIDtextBox.getText());
+                    String name = nameInput.getText();
+                    String position = positionInput.getText();
+                    int teamID = teamIDComboBox.getSelectedIndex() + 1;
+                    try {
+                        databaseAdmin.updatePlayer(playerID, name, position, teamID);
+                    } catch (Exception e3) {
+                        System.out.println(e3);
+                    }
+                }
+            });
+
+            centerUpdate.add(playerIDtextBox);
+            centerUpdate.add(nameInput);
+            centerUpdate.add(positionInput);
+            centerUpdate.add(teamIDComboBox);
+
+            centerUpdate.add(back);
+            centerUpdate.add(updateButton);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+
+        } catch (Exception e2) {
+            System.out.println(e2.toString());
+            System.out.println("2");
+        } finally {
+        }
+    }
+
+    public void updateGame(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getGame("*");
+
+            ArrayList<Integer> gameIDList = new ArrayList<Integer>();
+            while (rs.next()){
+                gameIDList.add(rs.getInt("gameID"));
+            }
+
+            gameIDComboBox = new JComboBox(gameIDList.toArray());
+            gameIDComboBox.setRenderer(new MyComboBoxRenderer("gameID"));
+            gameIDComboBox.setSelectedIndex(-1);
+            centerUpdate.add(gameIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton pickGame = new JButton("Pick Game");
+            pickGame.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateGameClick();
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(pickGame);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e1){
+            System.out.println(e1.toString());
+            System.out.println("2342");
+        }
+        finally{
+        }
+    }
+
+    public void updateGameClick(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        int gameID = gameIDComboBox.getSelectedIndex() + 1;
+
+        try {
+
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getGame(Integer.toString(gameID));
+
+            rs.next();
+            String gameIDstr = rs.getString(1);
+            String scoreStr = rs.getString(2);
+            String startTimeStr = rs.getString(3);
+            String endTimeStr = rs.getString(4);
+            String tournamentIDStr = rs.getString(5);
+
+            rs.close();
+            gameIDTextBox = new JTextField(gameIDstr);
+            gameIDTextBox.setEditable(false);
+
+            score = new JTextField(scoreStr);
+            startTime = new JTextField(startTimeStr);
+            endTime = new JTextField(endTimeStr);
+
+
+            ResultSet rs2 = databaseAdmin.getTeam("*");
+
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            while (rs2.next()){
+                idList.add(rs2.getInt("teamID"));
+            }
+
+            tournamentIDBox = new JComboBox(idList.toArray());
+            tournamentIDBox.setSelectedIndex(Integer.parseInt(tournamentIDStr));
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton updateButton = new JButton("Update");
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int gameIDStr = Integer.parseInt(gameIDTextBox.getText());
+                    String scoreStr = score.getText();
+                    String startTimeStr = startTime.getText();
+                    String endTimeStr = endTime.getText();
+                    int tournamentIDStr = tournamentIDBox.getSelectedIndex() + 1;
+
+                    try {
+                        databaseAdmin.updateGames(gameIDStr, scoreStr, startTimeStr, endTimeStr, tournamentIDStr);
+                    } catch (Exception e3) {
+                        System.out.println(e3);
+                    }
+                }
+            });
+
+            centerUpdate.add(gameIDTextBox);
+            centerUpdate.add(score);
+            centerUpdate.add(startTime);
+            centerUpdate.add(endTime);
+            centerUpdate.add(tournamentIDBox);
+
+            centerUpdate.add(back);
+            centerUpdate.add(updateButton);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+
+        } catch (Exception e2) {
+            System.out.println(e2.toString());
+            System.out.println("2");
+        } finally {
+        }
+    }
+
+    public void updateTournament(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getTournament("*");
+
+            ArrayList<Integer> tournamentIDList = new ArrayList<Integer>();
+            while (rs.next()){
+                tournamentIDList.add(rs.getInt("tournamentID"));
+            }
+
+            tournamentIDBox = new JComboBox(tournamentIDList.toArray());
+            tournamentIDBox.setRenderer(new MyComboBoxRenderer("tournamentID"));
+            tournamentIDBox.setSelectedIndex(-1);
+            centerUpdate.add(tournamentIDBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton pickTournament = new JButton("Pick Tournament");
+            pickTournament.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateTournamentClick();
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(pickTournament);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e1){
+            System.out.println(e1.toString());
+            System.out.println("2342");
+        }
+        finally{
+        }
+    }
+
+    public void updateTournamentClick(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        int tournamentIDint = tournamentIDBox.getSelectedIndex() + 1;
+
+        try {
+
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getTournament(Integer.toString(tournamentIDint));
+
+            rs.next();
+            String tournamentIDstr = rs.getString(1);
+            String nameStr = rs.getString(2);
+            String locationStr = rs.getString(3);
+            String dateStr = rs.getString(4);
+
+            rs.close();
+
+            tournamentID = new JTextField(tournamentIDstr);
+            tournamentID.setEditable(false);
+
+            nameInput = new JTextField(nameStr);
+            locationInput = new JTextField(locationStr);
+            dateInput = new JTextField(dateStr);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton updateButton = new JButton("Update");
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int tournamentIDint = Integer.parseInt(tournamentID.getText());
+                    String nameStr = nameInput.getText();
+                    String locationStr = locationInput.getText();
+                    String dateStr = dateInput.getText();
+
+                    try {
+                        databaseAdmin.updateTournaments(tournamentIDint, nameStr, locationStr, dateStr);
+                    } catch (Exception e3) {
+                        System.out.println(e3);
+                    }
+                }
+            });
+
+            centerUpdate.add(tournamentID);
+            centerUpdate.add(nameInput);
+            centerUpdate.add(locationInput);
+            centerUpdate.add(dateInput);
+
+            centerUpdate.add(back);
+            centerUpdate.add(updateButton);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+
+        } catch (Exception e2) {
+            System.out.println(e2.toString());
+            System.out.println("2");
+        } finally {
+        }
+    }
+
+    public void updateCoach(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getCoach("*");
+
+            ArrayList<Integer> coachIDList = new ArrayList<Integer>();
+            while (rs.next()){
+                coachIDList.add(rs.getInt("coachID"));
+            }
+
+            coachIDComboBox = new JComboBox(coachIDList.toArray());
+            coachIDComboBox.setRenderer(new MyComboBoxRenderer("coachID"));
+            coachIDComboBox.setSelectedIndex(-1);
+            centerUpdate.add(coachIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton pickCoach = new JButton("Pick Coach");
+            pickCoach.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateCoachClick();
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(pickCoach);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e1){
+            System.out.println(e1.toString());
+            System.out.println("2342");
+        }
+        finally{
+        }
+    }
+
+    public void updateCoachClick(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        int coachID = coachIDComboBox.getSelectedIndex() + 1;
+
+        try {
+
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getCoach(Integer.toString(coachID));
+
+            rs.next();
+            String coachIDstr = rs.getString(1);
+            String nameStr = rs.getString(2);
+
+            rs.close();
+            coachIDTextBox = new JTextField(coachIDstr);
+            coachIDTextBox.setEditable(false);
+
+            nameInput = new JTextField(nameStr);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton updateButton = new JButton("Update");
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int coachIDStr = Integer.parseInt(coachIDTextBox.getText());
+                    String nameStr = nameInput.getText();
+
+                    try {
+                        databaseAdmin.updateCoach(coachIDStr, nameStr);
+                    } catch (Exception e3) {
+                        System.out.println(e3);
+                    }
+                }
+            });
+
+            centerUpdate.add(coachIDTextBox);
+            centerUpdate.add(nameInput);
+
+            centerUpdate.add(back);
+            centerUpdate.add(updateButton);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+
+        } catch (Exception e2) {
+            System.out.println(e2.toString());
+            System.out.println("2");
+        } finally {
+        }
+    }
+
+    public void updateTeam(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getTeam("*");
+
+            ArrayList<Integer> teamIDList = new ArrayList<Integer>();
+            while (rs.next()){
+                teamIDList.add(rs.getInt("teamID"));
+            }
+
+            teamIDComboBox = new JComboBox(teamIDList.toArray());
+            teamIDComboBox.setRenderer(new MyComboBoxRenderer("teamID"));
+            teamIDComboBox.setSelectedIndex(-1);
+            centerUpdate.add(teamIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton pickTeam = new JButton("Pick Team");
+            pickTeam.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateTeamClick();
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(pickTeam);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e1){
+            System.out.println(e1.toString());
+            System.out.println("2342");
+        }
+        finally{
+        }
+    }
+
+    public void updateTeamClick(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        int teamID = teamIDComboBox.getSelectedIndex() + 1;
+        try {
+
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getTeam(Integer.toString(teamID));
+
+
+            rs.next();
+            String teamIDstr = rs.getString(1);
+            String name = rs.getString(2);
+            String location = rs.getString(3);
+            String wins = rs.getString(4);
+            String losses = rs.getString(5);
+            String coachID = rs.getString(6);
+
+            rs.close();
+
+            teamIDTextBox = new JTextField(teamIDstr);
+            teamIDTextBox.setEditable(false);
+
+            nameInput = new JTextField(name);
+            locationInput = new JTextField(location);
+            winsInput = new JTextField(wins);
+            lossesInput = new JTextField(losses);
+
+            ResultSet rs2 = databaseAdmin.getCoach("*");
+
+            ArrayList<Integer> idList = new ArrayList<Integer>();
+            while (rs2.next()){
+                idList.add(rs2.getInt("coachID"));
+            }
+
+            coachIDComboBox = new JComboBox(idList.toArray());
+            coachIDComboBox.setSelectedIndex(Integer.parseInt(coachID));
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton updateButton = new JButton("Update");
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int teamID = Integer.parseInt(teamIDTextBox.getText());
+                    String name = nameInput.getText();
+                    String location = locationInput.getText();
+                    int wins = Integer.parseInt(winsInput.getText());
+                    int losses = Integer.parseInt(lossesInput.getText());
+                    int coachID = coachIDComboBox.getSelectedIndex() + 1;
+                    try {
+                        databaseAdmin.updateTeam(teamID, name, location, wins, losses, coachID);
+                    } catch (Exception e3) {
+                        System.out.println(e3);
+                    }
+                }
+            });
+
+            centerUpdate.add(teamIDTextBox);
+            centerUpdate.add(nameInput);
+            centerUpdate.add(locationInput);
+            centerUpdate.add(winsInput);
+            centerUpdate.add(lossesInput);
+            centerUpdate.add(coachIDComboBox);
+
+            centerUpdate.add(back);
+            centerUpdate.add(updateButton);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+
+        } catch (Exception e2) {
+            System.out.println(e2.toString());
+            System.out.println("2");
+        } finally {
+        }
+    }
+
+    public void updateParticipatesIn(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        try {
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.getPlayer("*");
+
+            ArrayList<Integer> playerIDList = new ArrayList<Integer>();
+            while (rs.next()) {
+                playerIDList.add(rs.getInt("playerID"));
+            }
+
+            playerIDComboBox = new JComboBox(playerIDList.toArray());
+            playerIDComboBox.setRenderer(new MyComboBoxRenderer("playerID"));
+            playerIDComboBox.setSelectedIndex(-1);
+            centerUpdate.add(playerIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton pickPlayer = new JButton("Pick Player");
+            pickPlayer.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateParticipatesInFirstClick();
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(pickPlayer);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+        } catch (Exception e2) {
+            System.out.println(e2.toString());
+            System.out.println("2");
+        } finally {
+        }
 
     }
 
-    public void addParticipatesIn(){
+    public void updateParticipatesInFirstClick(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
 
+        int playerID = playerIDComboBox.getSelectedIndex() + 1;
+        playerIDtextBox = new JTextField(Integer.toString(playerID));
+        playerIDtextBox.setEditable(false);
+        centerUpdate.add(playerIDtextBox);
+
+        try{
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+
+            //need an sql statement to get all the game IDs of the games that this player plays in
+            //
+            //
+            //
+            //
+            //
+            ResultSet rs = databaseAdmin.getGame("*");
+
+            ArrayList<Integer> gameIDList = new ArrayList<Integer>();
+            while (rs.next()){
+                gameIDList.add(rs.getInt("gameID"));
+            }
+
+            gameIDComboBox = new JComboBox(gameIDList.toArray());
+            gameIDComboBox.setRenderer(new MyComboBoxRenderer("gameID"));
+            gameIDComboBox.setSelectedIndex(-1);
+            centerUpdate.add(gameIDComboBox);
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateParticipatesIn();
+                }
+            });
+
+            JButton pickTeam = new JButton("Pick Team");
+            pickTeam.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    updateParticipatesInSecondClick();
+                }
+            });
+
+            centerUpdate.add(back);
+            centerUpdate.add(pickTeam);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+        }
+        catch(Exception e1){
+            System.out.println(e1.toString());
+            System.out.println("2342");
+        }
+        finally{
+        }
+    }
+
+    public void updateParticipatesInSecondClick(){
+        frame.setVisible(false);
+        frame.remove(centerUpdate);
+        centerUpdate = new JPanel(new GridLayout(3,2));
+
+        int playerID = Integer.parseInt(playerIDtextBox.getText());
+        int gameID = gameIDComboBox.getSelectedIndex() + 1;
+        try {
+
+            databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
+            ResultSet rs = databaseAdmin.participatesIn(Integer.toString(playerID), Integer.toString(gameID));
+
+
+            rs.next();
+            String playerIDint = rs.getString(1);
+            String gameIDint = rs.getString(2);
+            String drops = rs.getString(3);
+            String assists = rs.getString(4);
+            String goals = rs.getString(5);
+            String pointPlayed = rs.getString(6);
+            String throwaways = rs.getString(7);
+
+
+            rs.close();
+
+            playerIDtextBox = new JTextField(playerIDint);
+            playerIDtextBox.setEditable(false);
+
+            gameIDTextBox = new JTextField(gameIDint);
+            gameIDTextBox.setEditable(false);
+
+            dropsTextBox = new JTextField("Drops: " + drops);
+            assistsTextBox = new JTextField("Assists: " + assists);
+            goalsTextBox = new JTextField("Goals: " + goals);
+            pointsPlayedTextBox = new JTextField("PointsPlayed: " + pointPlayed);
+            throwawaysTextBox = new JTextField("Throwaways: " + throwaways);
+
+
+            //button to go back to original screen
+            JButton back = new JButton("Back");
+            back.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    mainScreen();
+                }
+            });
+
+            JButton updateButton = new JButton("Update");
+            updateButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    int playerID = Integer.parseInt(playerIDtextBox.getText());
+                    int gameID = Integer.parseInt(gameIDTextBox.getText());
+                    int drops = Integer.parseInt(dropsTextBox.getText());
+                    int assists = Integer.parseInt(assistsTextBox.getText());
+                    int goals = Integer.parseInt(goalsTextBox.getText());
+                    int pointsPlayed = Integer.parseInt(pointsPlayedTextBox.getText());
+                    int throwaways = Integer.parseInt(throwawaysTextBox.getText());
+                    try {
+                        databaseAdmin.updatePart(playerID, gameID, drops, assists, goals, pointsPlayed, throwaways);
+                    } catch (Exception e3) {
+                        System.out.println(e3);
+                    }
+                }
+            });
+
+            centerUpdate.add(playerIDtextBox);
+            centerUpdate.add(gameIDTextBox);
+            centerUpdate.add(dropsTextBox);
+            centerUpdate.add(assistsTextBox);
+            centerUpdate.add(goalsTextBox);
+            centerUpdate.add(pointsPlayedTextBox);
+            centerUpdate.add(throwawaysTextBox);
+
+            centerUpdate.add(back);
+            centerUpdate.add(updateButton);
+            frame.add(centerUpdate);
+            frame.setVisible(true);
+
+
+        } catch (Exception e2) {
+            System.out.println(e2.toString());
+            System.out.println("2");
+        } finally {
+        }
     }
 
     public void updateFrame(int index){
@@ -939,6 +2077,25 @@ public class QueryGUI extends JFrame {
         centerUpdate.add(back);
         frame.add(centerUpdate);
         frame.setVisible(true);
+    }
+
+    class MyComboBoxRenderer extends JLabel implements ListCellRenderer
+    {
+        private String _title;
+
+        public MyComboBoxRenderer(String title)
+        {
+            _title = title;
+        }
+
+        @Override
+        public Component getListCellRendererComponent(JList list, Object value,
+                                                      int index, boolean isSelected, boolean hasFocus)
+        {
+            if (index == -1 && value == null) setText(_title);
+            else setText(value.toString());
+            return this;
+        }
     }
 
     public static void main(String[] args){

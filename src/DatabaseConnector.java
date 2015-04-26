@@ -62,6 +62,14 @@ public class DatabaseConnector {
             rs = statement.executeQuery(query);
             return rs;
     }
+
+    /*
+        Gets all of a players games
+     */
+    public ResultSet getPlayersGames(int playerId) throws Exception{
+        String query = "Select gameId from participatesIn where playerId = " + playerId;
+        return statement.executeQuery(query);
+    }
     /*
         Gets a coach
         Use * to return the entire table

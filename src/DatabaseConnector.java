@@ -12,7 +12,7 @@ public class DatabaseConnector {
 
     private static final String DATABASE_NAME = "FrisbeeTest";
     private static final String DRIVER = "com.mysql.jdbc.Driver"; /*JDBC driver for mysql*/
-    private static final String SERVER = "jdbc:mysql://localhost:3306/FrisbeeTest";
+    private static final String SERVER = "jdbc:mysql://localhost:3306/" + DATABASE_NAME;
     private static final String GUEST = "user";
     private static final String GUESTPASS ="password";
     private static final String ADMIN = "user";
@@ -20,7 +20,7 @@ public class DatabaseConnector {
     private USERTYPE type;
 
     private Statement statement;
-    private Statement statement2;
+
     public DatabaseConnector(USERTYPE user) throws Exception{
             this.type = user;
             Class.forName(DRIVER);
@@ -32,7 +32,6 @@ public class DatabaseConnector {
             }
 
             statement = conn.createStatement();
-            statement2 = conn.createStatement();
     }
 
     /*
@@ -310,7 +309,7 @@ public class DatabaseConnector {
      * @return          if the query was successful
      */
     public void insertPlayer(String name, String position, int teamID) throws Exception{
-        statement.execute("INSERT INTO PLAYERS (name, position, teamID) values ("  +
+        statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values ("  +
                 "\'" + name + "\', \'" + position + "\', " + teamID + ")");
     }
 
@@ -349,7 +348,7 @@ public class DatabaseConnector {
     public void insertGame(String team1, String team2, String tournamentID, String score, String startTime, String endTime) throws Exception{
         String updateGames = "INSERT INTO GAMES(score, startTime, endTime, tournamentID) values ( \'" + score + "\', \'" + startTime + "\' , \'" +
                 endTime + "\'," + tournamentID + ")";
-        statement.executeQuery(updateGames);
+        statement.executeUpdate(updateGames);
         ResultSet rs = statement.executeQuery("Select gameID " +
                 "from Games "
                 + "ORDER BY gameID desc "
@@ -360,13 +359,13 @@ public class DatabaseConnector {
         statement.executeUpdate(updatePlaysIn);
         updatePlaysIn = "INSERT INTO PLAYIN(gameID, teamID) values (" + gameID + "," + team2 + ")";
         statement.executeUpdate(updatePlaysIn);
+
         rs = statement.executeQuery("Select playerID from Players where teamID = \'" + team1 + "\' or teamID = \'" + team2 + "\'");
 
-        while(rs.next()){
-            String updatePartIn = "INSERT INTO PARTIN(playerID, gameID, drops, assists, goals, pointsPlayed, throwaways) values (" +
+        rs.next();
+            String updatePartIn = "INSERT INTO PARTICIPATESIN(playerID, gameID, drops, assists, goals, pointsPlayed, throwaways) values (" +
                     rs.getInt(1) + "," + gameID + ", 0, 0, 0, 0, 0)";
-            statement2.executeUpdate(updatePartIn);
-        }
+            statement.executeUpdate(updatePartIn);
 
     }
 

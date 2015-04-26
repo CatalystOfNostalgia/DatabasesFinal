@@ -20,6 +20,7 @@ public class DatabaseConnector {
     private USERTYPE type;
 
     private Statement statement;
+    private Statement statement2;
 
     public DatabaseConnector(USERTYPE user) throws Exception{
             this.type = user;
@@ -32,6 +33,7 @@ public class DatabaseConnector {
             }
 
             statement = conn.createStatement();
+            statement2 = conn.createStatement();
     }
 
     /*
@@ -308,7 +310,7 @@ public class DatabaseConnector {
      * @return          if the query was successful
      */
     public void insertPlayer(String name, String position, int teamID) throws Exception{
-        statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values ("  +
+        statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values (" +
                 "\'" + name + "\', \'" + position + "\', " + teamID + ")");
     }
 
@@ -322,7 +324,7 @@ public class DatabaseConnector {
      * @throws Exception    Catches any SQL Exception
      */
     public void insertTeam(String name, String location, int wins, int losses, int coachID) throws Exception{
-        String update = "INSERT INTO TEAMS(name, location, wins, losses, caochID) values (" +  "\'" +
+        String update = "INSERT INTO TEAMS(name, location, wins, losses, coachID) values (" +  "\'" +
                 name + "\' , \'" + location + "\' , " + wins + "," + losses + "," + coachID + ")";
         statement.executeUpdate(update);
     }
@@ -337,7 +339,10 @@ public class DatabaseConnector {
     }
 
     public void insertTournament(String name, String location, String date) throws Exception{
-        String update = "INSERT INTO TOURNAMENTS(name, location, date) values (\' " + name + "\', \'" + location + "\', " + date + ")";
+
+        //String update = "INSERT INTO TOURNAMENTS(name, location, tournamentDate) values (\' " + name + "\', \'" + location + "\', " + date + ")";
+        String update = "INSERT INTO TOURNAMENTS(name, location, tournamentDate) values (\' " + name + "\', \'" + location + "\', '1111-11-11')";
+
         statement.executeUpdate(update);
     }
 
@@ -361,10 +366,11 @@ public class DatabaseConnector {
 
         rs = statement.executeQuery("Select playerID from Players where teamID = \'" + team1 + "\' or teamID = \'" + team2 + "\'");
 
-        rs.next();
+        while(rs.next()) {
             String updatePartIn = "INSERT INTO PARTICIPATESIN(playerID, gameID, drops, assists, goals, pointsPlayed, throwaways) values (" +
                     rs.getInt(1) + "," + gameID + ", 0, 0, 0, 0, 0)";
-            statement.executeUpdate(updatePartIn);
+            statement2.executeUpdate(updatePartIn);
+        }
 
     }
 
@@ -377,7 +383,7 @@ public class DatabaseConnector {
     }
 
     public void updateTeam(int teamId, String name, String location, int wins, int losses, int coachID) throws Exception{
-        String updateTeam = "UPDATE teams SET name = \'" + name + "\', location = \'" + location + ", wins = " + wins + ", losses ="
+        String updateTeam = "UPDATE teams SET name = " + name + ", location = " + location + ", wins = " + wins + ", losses ="
                 + losses + ", coachID = " + coachID + " WHERE teamID = " + teamId;
         statement.executeUpdate(updateTeam);
     }

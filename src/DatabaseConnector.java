@@ -378,7 +378,7 @@ public class DatabaseConnector {
     }
 
     public void updateTeam(int teamId, String name, String location, int wins, int losses, int coachID) throws Exception{
-        String updateTeam = "UPDATE teams SET name = \'" + name + "\', location = \'" + location + ", wins = " + wins + ", losses ="
+        String updateTeam = "UPDATE teams SET name = \'" + name + "\', location = \'" + location + "\', wins = " + wins + ", losses ="
                 + losses + ", coachID = " + coachID + " WHERE teamID = " + teamId;
         statement.executeUpdate(updateTeam);
     }

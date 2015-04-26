@@ -238,6 +238,7 @@ public class DatabaseConnector {
             return statement.executeQuery(query);
     }
 
+
     public ResultSet playersAboveThreshold(String stat, int threshold) throws Exception{
             String thresholdString = Integer.toString(threshold);
             String query = "SELECT P.name, SUM(PI." + stat+") AS " + stat + "\n" +
@@ -404,6 +405,7 @@ public class DatabaseConnector {
                 "tournamentId = " + tournamentID + " WHERE gameID = " + gameId;
         statement.executeUpdate(updateGame);
     }
+
 
     //public void updatePlaysIn(int teamID, int gameID)
     /*

@@ -196,6 +196,10 @@ public class DatabaseConnector {
             return statement.executeQuery(query);
     }
 
+    public ResultSet getPlayersGames(int playerID) throws Exception{
+        String query = "SELECT gameID from participatesin where playerid = " + playerID;
+        return statement.executeQuery(query);
+    }
     /**
      * Stats for all players on a given team
      * @param team  The team we are interested in

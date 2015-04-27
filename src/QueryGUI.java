@@ -579,14 +579,7 @@ public class QueryGUI extends JFrame {
 
                 try {
                     databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
-                    /*SimpleDateFormat from = new SimpleDateFormat("dd/MM/yyyy");
-                    SimpleDateFormat to = new SimpleDateFormat("yyyy-MM-dd");
-
-                    Date date = new java.sql.Date(from.parse(dateText).getTime());
-                    String mysqlDate = to.format(date);
-
-                    System.out.println(mysqlDate);*/
-                    databaseAdmin.insertTournament(nameText, locationText, "1993-11-12");
+                    databaseAdmin.insertTournament(nameText, locationText, dateText);
                 }
                 catch(Exception e2){
                     System.out.println(e2.toString());
@@ -801,9 +794,34 @@ public class QueryGUI extends JFrame {
 
             playerIDtextBox = new JTextField(playerIDstr);
             playerIDtextBox.setEditable(false);
+            JTextField playerIDLabel = new JTextField("PlayerID");
+            playerIDLabel.setEditable(false);
+            JPanel playerIDPanel = new JPanel();
+            playerIDPanel.add(playerIDLabel);
+            playerIDPanel.add(playerIDtextBox);
 
             nameInput = new JTextField(name);
-            positionInput = new JTextField(position);
+            JTextField nameLabel = new JTextField("Name");
+            nameLabel.setEditable(false);
+            JPanel namePanel = new JPanel();
+            namePanel.add(nameLabel);
+            namePanel.add(nameInput);
+
+            JTextField positionLabel = new JTextField("Position");
+            positionLabel.setEditable(false);
+            JPanel positionPanel = new JPanel();
+            //positionInput = new JTextField(position);
+            hOrC = new JComboBox(new String[] {"Handler", "Cutter"});
+            int positionIndex = 0;
+            if (position.equals("handler")){
+                positionIndex = 0;
+            }
+            else{
+                positionIndex = 1;
+            }
+            hOrC.setSelectedIndex(positionIndex);
+            positionPanel.add(positionLabel);
+            positionPanel.add(hOrC);
 
             ResultSet rs2 = databaseAdmin.getTeam("*");
 
@@ -813,8 +831,13 @@ public class QueryGUI extends JFrame {
             }
 
             teamIDComboBox = new JComboBox(idList.toArray());
-            //teamIDComboBox.setRenderer(new MyComboBoxRenderer("teamID"));
             teamIDComboBox.setSelectedIndex(Integer.parseInt(teamID));
+            JTextField teamIDLabel = new JTextField("TeamID");
+            teamIDLabel.setEditable(false);
+            JPanel teamIDPanel = new JPanel();
+            teamIDPanel.add(teamIDLabel);
+            teamIDPanel.add(teamIDComboBox);
+
 
             //button to go back to original screen
             JButton back = new JButton("Back");
@@ -831,20 +854,27 @@ public class QueryGUI extends JFrame {
                 public void actionPerformed(ActionEvent e) {
                     int playerID = Integer.parseInt(playerIDtextBox.getText());
                     String name = nameInput.getText();
-                    String position = positionInput.getText();
+
+                    int playerPositionIndex = hOrC.getSelectedIndex();
+                    String playerPosition;
+                    if (playerPositionIndex == 0)
+                        playerPosition = "Handler";
+                    else
+                        playerPosition = "Cutter";
                     int teamID = teamIDComboBox.getSelectedIndex() + 1;
+
                     try {
-                        databaseAdmin.updatePlayer(playerID, name, position, teamID);
+                        databaseAdmin.updatePlayer(playerID, name, playerPosition, teamID);
                     } catch (Exception e3) {
                         System.out.println(e3);
                     }
                 }
             });
 
-            centerUpdate.add(playerIDtextBox);
-            centerUpdate.add(nameInput);
-            centerUpdate.add(positionInput);
-            centerUpdate.add(teamIDComboBox);
+            centerUpdate.add(playerIDPanel);
+            centerUpdate.add(namePanel);
+            centerUpdate.add(positionPanel);
+            centerUpdate.add(teamIDPanel);
 
             centerUpdate.add(back);
             centerUpdate.add(updateButton);
@@ -931,10 +961,32 @@ public class QueryGUI extends JFrame {
             rs.close();
             gameIDTextBox = new JTextField(gameIDstr);
             gameIDTextBox.setEditable(false);
+            JTextField gameIDLabel = new JTextField("GameID");
+            gameIDLabel.setEditable(false);
+            JPanel gameIDPanel = new JPanel();
+            gameIDPanel.add(gameIDLabel);
+            gameIDPanel.add(gameIDTextBox);
 
             score = new JTextField(scoreStr);
+            JTextField scoreLabel = new JTextField("Score: ");
+            scoreLabel.setEditable(false);
+            JPanel scorePanel = new JPanel();
+            scorePanel.add(scoreLabel);
+            scorePanel.add(score);
+
             startTime = new JTextField(startTimeStr);
+            JTextField startTimeLabel = new JTextField("Start Time: ");
+            startTimeLabel.setEditable(false);
+            JPanel startTimePanel = new JPanel();
+            startTimePanel.add(startTimeLabel);
+            startTimePanel.add(startTime);
+
             endTime = new JTextField(endTimeStr);
+            JTextField endTimeLabel = new JTextField("End Time: ");
+            endTimeLabel.setEditable(false);
+            JPanel endTimePanel = new JPanel();
+            endTimePanel.add(endTimeLabel);
+            endTimePanel.add(endTime);
 
 
             ResultSet rs2 = databaseAdmin.getTeam("*");
@@ -946,6 +998,11 @@ public class QueryGUI extends JFrame {
 
             tournamentIDBox = new JComboBox(idList.toArray());
             tournamentIDBox.setSelectedIndex(Integer.parseInt(tournamentIDStr));
+            JTextField tournamentIDLabel = new JTextField("Tournament ID: ");
+            tournamentIDLabel.setEditable(false);
+            JPanel tournamentIDBoxPanel = new JPanel();
+            tournamentIDBoxPanel.add(tournamentIDLabel);
+            tournamentIDBoxPanel.add(tournamentIDBox);
 
             //button to go back to original screen
             JButton back = new JButton("Back");
@@ -974,11 +1031,11 @@ public class QueryGUI extends JFrame {
                 }
             });
 
-            centerUpdate.add(gameIDTextBox);
-            centerUpdate.add(score);
-            centerUpdate.add(startTime);
-            centerUpdate.add(endTime);
-            centerUpdate.add(tournamentIDBox);
+            centerUpdate.add(gameIDPanel);
+            centerUpdate.add(scorePanel);
+            centerUpdate.add(startTimePanel);
+            centerUpdate.add(endTimePanel);
+            centerUpdate.add(tournamentIDBoxPanel);
 
             centerUpdate.add(back);
             centerUpdate.add(updateButton);
@@ -1065,10 +1122,32 @@ public class QueryGUI extends JFrame {
 
             tournamentID = new JTextField(tournamentIDstr);
             tournamentID.setEditable(false);
+            JTextField tournamentIDLabel = new JTextField("TournamentID: ");
+            tournamentIDLabel.setEditable(false);
+            JPanel tournamentIDPanel = new JPanel();
+            tournamentIDPanel.add(tournamentIDLabel);
+            tournamentIDPanel.add(tournamentID);
 
             nameInput = new JTextField(nameStr);
+            JTextField nameLabel = new JTextField("Name: ");
+            nameLabel.setEditable(false);
+            JPanel namePanel = new JPanel();
+            namePanel.add(nameLabel);
+            namePanel.add(nameInput);
+
             locationInput = new JTextField(locationStr);
+            JTextField locationLabel = new JTextField("Location: ");
+            locationLabel.setEditable(false);
+            JPanel locationPanel = new JPanel();
+            locationPanel.add(locationLabel);
+            locationPanel.add(locationInput);
+
             dateInput = new JTextField(dateStr);
+            JTextField dateLabel = new JTextField("Date: ");
+            dateLabel.setEditable(false);
+            JPanel datePanel = new JPanel();
+            namePanel.add(dateLabel);
+            namePanel.add(dateInput);
 
             //button to go back to original screen
             JButton back = new JButton("Back");
@@ -1096,10 +1175,10 @@ public class QueryGUI extends JFrame {
                 }
             });
 
-            centerUpdate.add(tournamentID);
-            centerUpdate.add(nameInput);
-            centerUpdate.add(locationInput);
-            centerUpdate.add(dateInput);
+            centerUpdate.add(tournamentIDPanel);
+            centerUpdate.add(namePanel);
+            centerUpdate.add(locationPanel);
+            centerUpdate.add(datePanel);
 
             centerUpdate.add(back);
             centerUpdate.add(updateButton);
@@ -1183,8 +1262,18 @@ public class QueryGUI extends JFrame {
             rs.close();
             coachIDTextBox = new JTextField(coachIDstr);
             coachIDTextBox.setEditable(false);
+            JTextField coachIDLabel = new JTextField("CoachID");
+            coachIDLabel.setEditable(false);
+            JPanel coachIDPanel = new JPanel();
+            coachIDPanel.add(coachIDLabel);
+            coachIDPanel.add(coachIDTextBox);
 
             nameInput = new JTextField(nameStr);
+            JTextField nameLabel = new JTextField("Name");
+            nameLabel.setEditable(false);
+            JPanel namePanel = new JPanel();
+            namePanel.add(nameLabel);
+            namePanel.add(nameInput);
 
             //button to go back to original screen
             JButton back = new JButton("Back");
@@ -1210,8 +1299,8 @@ public class QueryGUI extends JFrame {
                 }
             });
 
-            centerUpdate.add(coachIDTextBox);
-            centerUpdate.add(nameInput);
+            centerUpdate.add(coachIDPanel);
+            centerUpdate.add(namePanel);
 
             centerUpdate.add(back);
             centerUpdate.add(updateButton);
@@ -1300,11 +1389,39 @@ public class QueryGUI extends JFrame {
 
             teamIDTextBox = new JTextField(teamIDstr);
             teamIDTextBox.setEditable(false);
+            JTextField teamIDLabel = new JTextField("TeamID");
+            teamIDLabel.setEditable(false);
+            JPanel teamIDPanel = new JPanel();
+            teamIDPanel.add(teamIDLabel);
+            teamIDPanel.add(teamIDTextBox);
 
             nameInput = new JTextField(name);
+            JTextField nameLabel = new JTextField("Name");
+            nameLabel.setEditable(false);
+            JPanel namePanel = new JPanel();
+            namePanel.add(nameLabel);
+            namePanel.add(nameInput);
+
             locationInput = new JTextField(location);
+            JTextField locationLabel = new JTextField("Location");
+            locationLabel.setEditable(false);
+            JPanel locationPanel = new JPanel();
+            locationPanel.add(locationLabel);
+            locationPanel.add(locationInput);
+
             winsInput = new JTextField(wins);
+            JTextField winsLabel = new JTextField("Wins");
+            winsLabel.setEditable(false);
+            JPanel winsPanel = new JPanel();
+            winsPanel.add(winsLabel);
+            winsPanel.add(winsInput);
+
             lossesInput = new JTextField(losses);
+            JTextField lossesLabel = new JTextField("Losses");
+            lossesLabel.setEditable(false);
+            JPanel lossesPanel = new JPanel();
+            namePanel.add(lossesLabel);
+            namePanel.add(lossesInput);
 
             ResultSet rs2 = databaseAdmin.getCoach("*");
 
@@ -1315,6 +1432,11 @@ public class QueryGUI extends JFrame {
 
             coachIDComboBox = new JComboBox(idList.toArray());
             coachIDComboBox.setSelectedIndex(Integer.parseInt(coachID));
+            JTextField coachIDLabel = new JTextField("CoachID");
+            coachIDLabel.setEditable(false);
+            JPanel coachIDPanel = new JPanel();
+            coachIDPanel.add(coachIDLabel);
+            coachIDPanel.add(coachIDComboBox);
 
             //button to go back to original screen
             JButton back = new JButton("Back");
@@ -1343,12 +1465,12 @@ public class QueryGUI extends JFrame {
                 }
             });
 
-            centerUpdate.add(teamIDTextBox);
-            centerUpdate.add(nameInput);
-            centerUpdate.add(locationInput);
-            centerUpdate.add(winsInput);
-            centerUpdate.add(lossesInput);
-            centerUpdate.add(coachIDComboBox);
+            centerUpdate.add(teamIDPanel);
+            centerUpdate.add(namePanel);
+            centerUpdate.add(locationPanel);
+            centerUpdate.add(winsPanel);
+            centerUpdate.add(lossesPanel);
+            centerUpdate.add(coachIDPanel);
 
             centerUpdate.add(back);
             centerUpdate.add(updateButton);
@@ -1421,16 +1543,11 @@ public class QueryGUI extends JFrame {
         playerIDtextBox.setEditable(false);
         centerUpdate.add(playerIDtextBox);
 
+
         try{
             databaseAdmin = new DatabaseConnector(DatabaseConnector.USERTYPE.ADMIN);
 
-            //need an sql statement to get all the game IDs of the games that this player plays in
-            //
-            //
-            //
-            //
-            //
-            ResultSet rs = databaseAdmin.getGame("*");
+            ResultSet rs = databaseAdmin.getPlayersGames(playerID);
 
             ArrayList<Integer> gameIDList = new ArrayList<Integer>();
             while (rs.next()){
@@ -1500,15 +1617,54 @@ public class QueryGUI extends JFrame {
 
             playerIDtextBox = new JTextField(playerIDint);
             playerIDtextBox.setEditable(false);
+            JTextField playerIDLabel = new JTextField("PlayerID");
+            playerIDLabel.setEditable(false);
+            JPanel playerIDPanel = new JPanel();
+            playerIDPanel.add(playerIDLabel);
+            playerIDPanel.add(playerIDtextBox);
 
             gameIDTextBox = new JTextField(gameIDint);
             gameIDTextBox.setEditable(false);
+            JTextField gameIDLabel = new JTextField("GameID");
+            gameIDLabel.setEditable(false);
+            JPanel gameIDPanel = new JPanel();
+            gameIDPanel.add(gameIDLabel);
+            gameIDPanel.add(gameIDTextBox);
 
-            dropsTextBox = new JTextField("Drops: " + drops);
-            assistsTextBox = new JTextField("Assists: " + assists);
-            goalsTextBox = new JTextField("Goals: " + goals);
-            pointsPlayedTextBox = new JTextField("PointsPlayed: " + pointPlayed);
-            throwawaysTextBox = new JTextField("Throwaways: " + throwaways);
+            dropsTextBox = new JTextField(drops);
+            JTextField dropsLabel = new JTextField("Drops");
+            dropsLabel.setEditable(false);
+            JPanel dropsPanel = new JPanel();
+            dropsPanel.add(dropsLabel);
+            dropsPanel.add(dropsTextBox);
+
+            assistsTextBox = new JTextField(assists);
+            JTextField assistsLabel = new JTextField("Assists");
+            assistsLabel.setEditable(false);
+            JPanel assistsPanel = new JPanel();
+            assistsPanel.add(assistsLabel);
+            assistsPanel.add(assistsTextBox);
+
+            goalsTextBox = new JTextField(goals);
+            JTextField goalsLabel = new JTextField("Goals");
+            goalsLabel.setEditable(false);
+            JPanel goalsPanel = new JPanel();
+            goalsPanel.add(goalsLabel);
+            goalsPanel.add(goalsTextBox);
+
+            pointsPlayedTextBox = new JTextField(pointPlayed);
+            JTextField pointsPlayedLabel = new JTextField("Points Played");
+            pointsPlayedLabel.setEditable(false);
+            JPanel pointsPlayedPanel = new JPanel();
+            pointsPlayedPanel.add(pointsPlayedLabel);
+            pointsPlayedPanel.add(pointsPlayedTextBox);
+
+            throwawaysTextBox = new JTextField(throwaways);
+            JTextField throwawaysLabel = new JTextField("Throwaways");
+            throwawaysLabel.setEditable(false);
+            JPanel throwawaysPanel = new JPanel();
+            throwawaysPanel.add(throwawaysLabel);
+            throwawaysPanel.add(throwawaysTextBox);
 
 
             //button to go back to original screen
@@ -1539,13 +1695,13 @@ public class QueryGUI extends JFrame {
                 }
             });
 
-            centerUpdate.add(playerIDtextBox);
-            centerUpdate.add(gameIDTextBox);
-            centerUpdate.add(dropsTextBox);
-            centerUpdate.add(assistsTextBox);
-            centerUpdate.add(goalsTextBox);
-            centerUpdate.add(pointsPlayedTextBox);
-            centerUpdate.add(throwawaysTextBox);
+            centerUpdate.add(playerIDPanel);
+            centerUpdate.add(gameIDPanel);
+            centerUpdate.add(dropsPanel);
+            centerUpdate.add(assistsPanel);
+            centerUpdate.add(goalsPanel);
+            centerUpdate.add(pointsPlayedPanel);
+            centerUpdate.add(throwawaysPanel);
 
             centerUpdate.add(back);
             centerUpdate.add(updateButton);
@@ -2078,6 +2234,7 @@ public class QueryGUI extends JFrame {
         frame.add(centerUpdate);
         frame.setVisible(true);
     }
+
 
     class MyComboBoxRenderer extends JLabel implements ListCellRenderer
     {

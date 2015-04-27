@@ -12,7 +12,7 @@ public class DatabaseConnector {
 
     private static final String DATABASE_NAME = "FrisbeeTest";
     private static final String DRIVER = "com.mysql.jdbc.Driver"; /*JDBC driver for mysql*/
-    private static final String SERVER = "jdbc:mysql://localhost:3306/" + DATABASE_NAME;
+    private static final String SERVER = "jdbc:mysql://localhost:3306/" + DATABASE_NAME + "?zeroDateTimeBehavior=convertToNull";
     private static final String GUEST = "user";
     private static final String GUESTPASS ="password";
     private static final String ADMIN = "user";
@@ -349,7 +349,7 @@ public class DatabaseConnector {
     public void insertTournament(String name, String location, String date) throws Exception{
 
         //String update = "INSERT INTO TOURNAMENTS(name, location, tournamentDate) values (\' " + name + "\', \'" + location + "\', " + date + ")";
-        String update = "INSERT INTO TOURNAMENTS(name, location, tournamentDate) values (\' " + name + "\', \'" + location + "\', '1111-11-11')";
+        String update = "INSERT INTO TOURNAMENTS(name, location, tournamentDate) values (\' " + name + "\', \'" + location + "\', DATE \'" + date + " \')";
 
         statement.executeUpdate(update);
     }
@@ -384,7 +384,7 @@ public class DatabaseConnector {
 
     public void updatePart(int playerID, int gameID, int drops, int assists, int goals, int pointsPlayed, int throwaways) throws Exception{
         String updatePlayer = "UPDATE participatesIn SET drops = " + drops + ", assists = " + assists + ", goals =" + goals +
-                ", pointsPlayed = " + pointsPlayed + ", throwaways = " + throwaways + "WHERE playerID = " + playerID + " and gameID = " +
+                ", pointsPlayed = " + pointsPlayed + ", throwaways = " + throwaways + " WHERE playerID = " + playerID + " and gameID = " +
                 gameID;
         statement.executeUpdate(updatePlayer);
 
@@ -407,7 +407,7 @@ public class DatabaseConnector {
     }
 
     public void updateTournaments(int tournamentID, String name, String location, String date) throws Exception{
-        String updateTournament = "UPDATE tournaments SET name = \'" + name + "\', location = \'" + location + "\' + date = \'" + date +
+        String updateTournament = "UPDATE tournaments SET name = \'" + name + "\', location = \'" + location + "\',tournamentDate = DATE \'" + date +
                 "\' WHERE tournamentID = " + tournamentID;
         statement.executeUpdate(updateTournament);
     }

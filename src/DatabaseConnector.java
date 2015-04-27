@@ -13,9 +13,9 @@ public class DatabaseConnector {
     private static final String DATABASE_NAME = "FrisbeeTest";
     private static final String DRIVER = "com.mysql.jdbc.Driver"; /*JDBC driver for mysql*/
     private static final String SERVER = "jdbc:mysql://localhost:3306/" + DATABASE_NAME + "?zeroDateTimeBehavior=convertToNull";
-    private static final String GUEST = "user";
+    private static final String GUEST = "guest";
     private static final String GUESTPASS ="password";
-    private static final String ADMIN = "user";
+    private static final String ADMIN = "guest";
     private static final String ADMINPASS = "password";
     private USERTYPE type;
 
@@ -181,9 +181,9 @@ public class DatabaseConnector {
      */
     public ResultSet bestRecords(int n) throws Exception{
             String number = Integer.toString(n);
-            String query = "SELECT T.wins/T.Losses, T.name\n" +
+            String query = "SELECT T.wins - T.Losses, T.name\n" +
                     "FROM Teams AS T\n" +
-                    "ORDER BY T.wins/T.losses desc\n" +
+                    "ORDER BY T.wins - T.losses desc\n" +
                     "LIMIT " + number;
             return statement.executeQuery(query);
     }
@@ -258,7 +258,6 @@ public class DatabaseConnector {
             return statement.executeQuery(query);
     }
 
-
     //returns only 0s for everyone right now
     public ResultSet yearsPlayed() throws Exception{
             return statement.executeQuery("SELECT DISTINCT PY.playerID, PY.name, MAX(PY.year ) - MIN(PY.year) AS yearsPlayed\n" +
@@ -318,7 +317,7 @@ public class DatabaseConnector {
      * @return          if the query was successful
      */
     public void insertPlayer(String name, String position, int teamID) throws Exception{
-        statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values (" +
+        statement.execute("INSERT INTO PLAYERS (name, position, teamID) values (" +
                 "\'" + name + "\', \'" + position + "\', " + teamID + ")");
     }
 

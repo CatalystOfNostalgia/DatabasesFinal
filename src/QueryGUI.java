@@ -69,7 +69,7 @@ public class QueryGUI extends JFrame {
     private static String driver ="com.mysql.jdbc.Driver" ;
     private static String server
             ="jdbc:mysql://localhost:3306/Assignment5";
-    private static String username = "user";
+    private static String username = "guest";
     private static String password = "password";
     private static Connection con=null;
 
@@ -185,8 +185,8 @@ public class QueryGUI extends JFrame {
         select.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                int queryIndex = queryList.getSelectedIndex();
-                updateFrame(queryIndex);
+                //int queryIndex = queryList.getSelectedIndex();
+                //updateFrame(queryIndex);
             }
         });
         center.add(select);
@@ -385,6 +385,7 @@ public class QueryGUI extends JFrame {
         frame.setVisible(true);
 
     }
+
     public void addPlayer(){
         frame.setVisible(false);
         frame.remove(centerUpdate);

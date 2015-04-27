@@ -199,7 +199,7 @@ public class DatabaseConnector {
                 "WHERE \tT.teamID = P.teamID AND\n" +
                 "\t\tPI.playerID = P.playerID\n" +
                 "GROUP BY T.name\n" +
-                "ORDER BY SUM(PI.pointsPlayed) desc\n" +
+                "ORDER BY SUM(PI." + stat + ") desc\n" +
                 "LIMIT " + number;
         return statement.executeQuery(query);
     }
@@ -336,8 +336,8 @@ public class DatabaseConnector {
     public ResultSet playersOnlyOnOneTeam() throws Exception{
         return statement.executeQuery(  "SELECT Players.playerID, Players.name " +
                                         "FROM   Players " +
-                                        "WHERE Player.playerID NOT IN   (SELECT P1.playerID " +
-                                                                        "FROM   ParticipatesIn AS P1, ParticipatesIn AS P2 " +
+                                        "WHERE Players.playerID NOT IN   (SELECT P1.playerID " +
+                                                                        "FROM   Players AS P1, Players AS P2 " +
                                                                         "WHERE  P1.teamID <> P2.teamID AND " +
                                                                         "P1.playerID = P2.playerID)");
     }
@@ -433,7 +433,7 @@ public class DatabaseConnector {
     }
 
     public void updatePlayer(int playerID, String name, String position, int teamID) throws Exception{
-        String updatePlayer = "UPDATE players SET name = \'" + name + "\', teamID = " + teamID + " position = " + position.toLowerCase() + " WHERE playerID = " + playerID;
+        String updatePlayer = "UPDATE players SET name = \'" + name + "\', teamID = " + teamID + ", position = \'" + position.toLowerCase() + "\' WHERE playerID = " + playerID;
         statement.executeUpdate(updatePlayer);
     }
 

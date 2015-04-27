@@ -335,11 +335,12 @@ public class DatabaseConnector {
 
     public ResultSet playersOnlyOnOneTeam() throws Exception{
         return statement.executeQuery(  "SELECT Players.playerID, Players.name " +
-                                        "FROM   Players " +
-                                        "WHERE Players.playerID NOT IN   (SELECT P1.playerID " +
-                                                                        "FROM   Players AS P1, Players AS P2 " +
-                                                                        "WHERE  P1.teamID <> P2.teamID AND " +
-                                                                        "P1.playerID = P2.playerID)");
+                                        "FROM Players " +
+                                        "WHERE Players.playerID not in(Select p1.playerID " +
+                                        "from Players p1, ParticipatesIn pi " +
+                                        "where p1.playerID = pi.playerID and pi.gameID not in(Select PlayIn.gameId " +
+                                        "from PlayIn " +
+                                        "where PlayIn.gameId = pi.gameId and p1.teamId = PlayIn.teamId))");
     }
 
     /**

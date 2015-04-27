@@ -69,7 +69,7 @@ public class QueryGUI extends JFrame {
     private static String driver ="com.mysql.jdbc.Driver" ;
     private static String server
             ="jdbc:mysql://localhost:3306/Assignment5";
-    private static String username = "guest";
+    private static String username = "user";
     private static String password = "password";
     private static Connection con=null;
 
@@ -1924,23 +1924,25 @@ public class QueryGUI extends JFrame {
                     result = database.yearsPlayed();
                     break;
                 case 9:
-                    result = database.playerComparison(information[4], information[6]);
+                    result = database.playerComparison(Integer.parseInt(information[4]), Integer.parseInt(information[6]));
                     break;
                 case 10:
-                    //NOTHING RETURNED USING THIS QUERY
                     result = database.teamsSharingLoc();
                     break;
                 case 11:
                     result = database.gamesInTourney(information[7]);
                     break;
-                case 12: //tournaments on the same date
-                    //result = database.
+                case 12:
+                    result = database.tournamentsOnSameDay();
                     break;
-                case 13: //players who have left and come back
+                case 13:
+                    result = database.retiredPlayers();
                     break;
-                case 14: //teams who participated in all tournaments
+                case 14:
+                    result = database.teamsAllTournaments();
                     break;
-                case 15: //players who have played on only one team
+                case 15:
+                    result = database.playersOnlyOnOneTeam();
                     break;
             }
 

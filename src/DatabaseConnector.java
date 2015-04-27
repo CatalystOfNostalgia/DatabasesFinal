@@ -300,9 +300,9 @@ public class DatabaseConnector {
     }
 
     public ResultSet tournamentsOnSameDay() throws Exception{
-        String query = "SELECT T1.name, T2.name\n" +
+        String query = "SELECT DISTINCT T1.name, T2.name\n" +
                 "FROM Tournaments T1, Tournaments T2\n" +
-                "WHERE T1. tournamentID <> T2.tournamentID AND\n" +
+                "WHERE T1.tournamentID <> T2.tournamentID AND\n" +
                 "T1.tournamentDate = T2.tournamentDate";
         return statement.executeQuery(query);
     }
@@ -322,7 +322,7 @@ public class DatabaseConnector {
     }
 
     public ResultSet teamsAllTournaments() throws Exception{
-        return statement.executeQuery(  "SELECT Teams.name, Teams.teamID " +
+        return statement.executeQuery(  "SELECT TournamentsPlayed.name, TournamentsPlayed.teamID " +
                                         "FROM   (SELECT Teams.name AS name, PlayIn.teamID AS teamID, COUNT(DISTINCT Games.tournamentID) AS tournaments " +
                                                 "FROM   Games, PlayIn, Teams " +
                                                 "WHERE  Games.gameID = PlayIn.gameID AND " +
@@ -330,13 +330,13 @@ public class DatabaseConnector {
                                                 "GROUP BY PlayIn.teamID) AS TournamentsPlayed, " +
                                                "(SELECT COUNT(Tournaments.tournamentID) AS tournamentsPlayed " +
                                                 "FROM Tournaments) AS totalTournaments " +
-                                        "WHERE tournaments = totalTournaments.tournamentsPlayed");
+                                        "WHERE TournamentsPlayed.tournaments = totalTournaments.tournamentsPlayed");
     }
 
     public ResultSet playersOnlyOnOneTeam() throws Exception{
         return statement.executeQuery(  "SELECT Players.playerID, Players.name " +
                                         "FROM   Players " +
-                                        "WHERE Player.playerID NOT IN   (SELECT ParticipatesIn.playerID " +
+                                        "WHERE Player.playerID NOT IN   (SELECT P1.playerID " +
                                                                         "FROM   ParticipatesIn AS P1, ParticipatesIn AS P2 " +
                                                                         "WHERE  P1.teamID <> P2.teamID AND " +
                                                                         "P1.playerID = P2.playerID)");

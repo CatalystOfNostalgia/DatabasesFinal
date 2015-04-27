@@ -318,7 +318,7 @@ public class DatabaseConnector {
      * @return          if the query was successful
      */
     public void insertPlayer(String name, String position, int teamID) throws Exception{
-        statement.execute("INSERT INTO PLAYERS (playerID, name, position, teamID) values (" +
+        statement.execute("INSERT INTO PLAYERS (name, position, teamID) values (" +
                 "\'" + name + "\', \'" + position + "\', " + teamID + ")");
     }
 
@@ -422,7 +422,7 @@ public class DatabaseConnector {
     /*
     * Utility function for iterating through a result set. Outputs to commandline for now though.
     * */
-    public static void getResults(ResultSet rs){
+    /*public static void getResults(ResultSet rs){
         try {
             ResultSetMetaData mdata = rs.getMetaData();
             //Loops through the rows of the output
@@ -438,6 +438,6 @@ public class DatabaseConnector {
         catch(SQLException e){
             System.out.println(e.toString());
         }
-    }
+    } */
 
 }

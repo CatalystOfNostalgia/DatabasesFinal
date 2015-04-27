@@ -440,8 +440,6 @@ public class QueryGUI extends JFrame {
                         System.out.println(e2.toString());
                         System.out.println("4");
                     }
-                    finally {
-                    }
                 }
             });
 
@@ -454,8 +452,6 @@ public class QueryGUI extends JFrame {
         catch(Exception e1){
             e1.toString();
             System.out.println("2342");
-        }
-        finally{
         }
     }
 
@@ -530,8 +526,6 @@ public class QueryGUI extends JFrame {
                         System.out.println(e2.toString());
                         System.out.println("1");
                     }
-                    finally {
-                    }
                 }
             });
 
@@ -544,8 +538,6 @@ public class QueryGUI extends JFrame {
         catch(Exception e3){
             System.out.println(e3.toString());
             System.out.println("2");
-        }
-        finally{
         }
 
     }
@@ -586,8 +578,6 @@ public class QueryGUI extends JFrame {
                 catch(Exception e2){
                     System.out.println(e2.toString());
                     System.out.println("1");
-                }
-                finally {
                 }
             }
         });
@@ -631,7 +621,6 @@ public class QueryGUI extends JFrame {
                     } catch (Exception e2) {
                         System.out.println(e2.toString());
                         System.out.println("1");
-                    } finally {
                     }
                 }
             });
@@ -645,8 +634,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e3.toString());
             System.out.println("2");
         }
-        finally{
-        }
+
 
     }
 
@@ -705,8 +693,7 @@ public class QueryGUI extends JFrame {
                         System.out.println(e2.toString());
                         System.out.println("4");
                     }
-                    finally {
-                    }
+
                 }
             });
 
@@ -720,8 +707,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e1.toString());
             System.out.println("2342");
         }
-        finally{
-        }
+
     }
 
     public void updatePlayer(){
@@ -770,8 +756,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e1.toString());
             System.out.println("2342");
         }
-        finally{
-        }
+
     }
 
     public void updatePlayerClick(){
@@ -887,7 +872,6 @@ public class QueryGUI extends JFrame {
         } catch (Exception e2) {
             System.out.println(e2.toString());
             System.out.println("2");
-        } finally {
         }
     }
 
@@ -937,8 +921,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e1.toString());
             System.out.println("2342");
         }
-        finally{
-        }
+
     }
 
     public void updateGameClick(){
@@ -1048,7 +1031,6 @@ public class QueryGUI extends JFrame {
         } catch (Exception e2) {
             System.out.println(e2.toString());
             System.out.println("2");
-        } finally {
         }
     }
 
@@ -1098,8 +1080,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e1.toString());
             System.out.println("2342");
         }
-        finally{
-        }
+
     }
 
     public void updateTournamentClick(){
@@ -1191,7 +1172,6 @@ public class QueryGUI extends JFrame {
         } catch (Exception e2) {
             System.out.println(e2.toString());
             System.out.println("2");
-        } finally {
         }
     }
 
@@ -1241,8 +1221,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e1.toString());
             System.out.println("2342");
         }
-        finally{
-        }
+
     }
 
     public void updateCoachClick(){
@@ -1313,7 +1292,6 @@ public class QueryGUI extends JFrame {
         } catch (Exception e2) {
             System.out.println(e2.toString());
             System.out.println("2");
-        } finally {
         }
     }
 
@@ -1363,8 +1341,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e1.toString());
             System.out.println("2342");
         }
-        finally{
-        }
+
     }
 
     public void updateTeamClick(){
@@ -1483,7 +1460,6 @@ public class QueryGUI extends JFrame {
         } catch (Exception e2) {
             System.out.println(e2.toString());
             System.out.println("2");
-        } finally {
         }
     }
 
@@ -1530,7 +1506,6 @@ public class QueryGUI extends JFrame {
         } catch (Exception e2) {
             System.out.println(e2.toString());
             System.out.println("2");
-        } finally {
         }
 
     }
@@ -1588,8 +1563,7 @@ public class QueryGUI extends JFrame {
             System.out.println(e1.toString());
             System.out.println("2342");
         }
-        finally{
-        }
+
     }
 
     public void updateParticipatesInSecondClick(){
@@ -1714,7 +1688,6 @@ public class QueryGUI extends JFrame {
         } catch (Exception e2) {
             System.out.println(e2.toString());
             System.out.println("2");
-        } finally {
         }
     }
 
@@ -1955,7 +1928,6 @@ public class QueryGUI extends JFrame {
             con.close();
         } catch(Exception e){
             System.out.println(e.toString());
-        }finally{
         }
         //button to go back to original screen
         JButton back = new JButton("Back");
@@ -1996,8 +1968,7 @@ public class QueryGUI extends JFrame {
         catch(Exception e){
             System.out.println(e.toString());
         }
-        finally{
-        }
+
         return model;
     }
 
@@ -2023,8 +1994,7 @@ public class QueryGUI extends JFrame {
         catch(Exception e){
             System.out.println(e.toString());
         }
-        finally{
-        }
+
 
         //button to go back to original screen
         JButton back = new JButton("Back");
@@ -2061,8 +2031,7 @@ public class QueryGUI extends JFrame {
         catch(Exception e){
             System.out.println(e.toString());
         }
-        finally{
-        }
+
 
         //button to go back to original screen
         JButton back = new JButton("Back");
@@ -2099,8 +2068,7 @@ public class QueryGUI extends JFrame {
         catch(Exception e){
             System.out.println(e.toString());
         }
-        finally{
-        }
+
 
         //button to go back to original screen
         JButton back = new JButton("Back");
@@ -2137,8 +2105,7 @@ public class QueryGUI extends JFrame {
         catch(Exception e){
             System.out.println(e.toString());
         }
-        finally{
-        }
+
 
         //button to go back to original screen
         JButton back = new JButton("Back");
@@ -2175,8 +2142,7 @@ public class QueryGUI extends JFrame {
         catch(Exception e){
             System.out.println(e.toString());
         }
-        finally{
-        }
+
         //button to go back to original screen
         JButton back = new JButton("Back");
         back.addActionListener(new ActionListener() {
@@ -2212,8 +2178,7 @@ public class QueryGUI extends JFrame {
         catch(Exception e){
             System.out.println(e.toString());
         }
-        finally{
-        }
+
         //button to go back to original screen
         JButton back = new JButton("Back");
         back.addActionListener(new ActionListener() {
@@ -2248,8 +2213,6 @@ public class QueryGUI extends JFrame {
         }
         catch(Exception e){
             System.out.println(e.toString());
-        }
-        finally{
         }
         //button to go back to original screen
         JButton back = new JButton("Back");

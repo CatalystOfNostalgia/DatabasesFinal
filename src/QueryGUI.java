@@ -175,7 +175,8 @@ public class QueryGUI extends JFrame {
                 "Teams with highest stats for a certain statistic", "Stats for all players on a team",
                 "Stats for an individual player", "Stats for one team", "Stats for one team in one game",
                 "All players above a threshold in a statistics", "How many years all players have played for",
-                "Comparing two players", "Teams from the same location", "All games in a specific tournament"};
+                "Comparing two players", "Teams from the same location", "All games in a specific tournament", "Tournaments on the same date",
+                "Players who have stopped playing and came back", "Teams who participated in all tournaments", "Players who have played on only one team"};
 
         queryList = new JComboBox(queryStrings);
         center.add(queryList);
@@ -185,8 +186,8 @@ public class QueryGUI extends JFrame {
         select.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //int queryIndex = queryList.getSelectedIndex();
-                //updateFrame(queryIndex);
+                int queryIndex = queryList.getSelectedIndex();
+                updateFrame(queryIndex);
             }
         });
         center.add(select);
@@ -1783,6 +1784,14 @@ public class QueryGUI extends JFrame {
                 tournamentID = new JTextField("TournamentID");
                 centerUpdate.add(tournamentID);
                 break;
+            case 12: //tournaments on the same date
+                break;
+            case 13: //players who have left and come back
+                break;
+            case 14: //teams who participated in all tournaments
+                break;
+            case 15: //players who have played on only one team
+                break;
         }
 
         JButton viewResult = new JButton("View Result");
@@ -1840,6 +1849,14 @@ public class QueryGUI extends JFrame {
                         break;
                     case 11:
                         information[7] = tournamentID.getText();
+                        break;
+                    case 12: //tournaments on the same date
+                        break;
+                    case 13: //players who have left and come back
+                        break;
+                    case 14: //teams who participated in all tournaments
+                        break;
+                    case 15: //players who have played on only one team
                         break;
                 }
 
@@ -1915,6 +1932,15 @@ public class QueryGUI extends JFrame {
                     break;
                 case 11:
                     result = database.gamesInTourney(information[7]);
+                    break;
+                case 12: //tournaments on the same date
+                    //result = database.
+                    break;
+                case 13: //players who have left and come back
+                    break;
+                case 14: //teams who participated in all tournaments
+                    break;
+                case 15: //players who have played on only one team
                     break;
             }
 

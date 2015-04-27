@@ -155,7 +155,6 @@ public class TableFiller {
                 tournamentNames[i] = tournamentNameReader.readLine();
                 tournamentLocations[i] = teamLocations[i];
                 tournamentDate[i] = "200" + i + "-" + i + "-" + i * 3;
-
             }
 
             //initialize play in and participates in
@@ -172,10 +171,7 @@ public class TableFiller {
                 //play in
                 playGameID[i] = (i / 2) + 1;
                 playTeamID[i] = (i % 10) + 1;
-
             }
-
-
         }
         catch(FileNotFoundException e){
             System.out.println("missing file");
@@ -201,7 +197,6 @@ public class TableFiller {
             instruction.execute("CREATE DATABASE FrisbeeTest");
             instruction.execute("USE FrisbeeTest");
 
-
             //tables
             instruction.execute("CREATE TABLE Coaches (coachID INT NOT NULL AUTO_INCREMENT, name varchar(20), PRIMARY KEY (coachID))");
             instruction.execute("CREATE TABLE Teams (teamID INT NOT NULL AUTO_INCREMENT, name varchar(20), location varchar(20), wins int, losses int, coachID int, PRIMARY KEY (teamID), FOREIGN KEY(coachID) REFERENCES Coaches(coachID))");
@@ -210,6 +205,8 @@ public class TableFiller {
             instruction.execute("CREATE TABLE Games (gameID INT NOT NULL AUTO_INCREMENT, score varchar(20), startTime TIME, endTime TIME, tournamentID int, PRIMARY KEY (gameID), FOREIGN KEY (tournamentID) REFERENCES Tournaments(tournamentID) ON DELETE CASCADE)");
             instruction.execute("CREATE TABLE ParticipatesIn(playerID int, gameID int, drops int, assists int, goals int, pointsPlayed int, throwaways int, PRIMARY KEY (playerID, gameID), FOREIGN KEY (playerID) REFERENCES Players(playerID) ON DELETE CASCADE, FOREIGN KEY (gameID) REFERENCES Games(gameID) ON DELETE CASCADE)");
             instruction.execute("CREATE TABLE PlayIn(gameID int, teamID int, PRIMARY KEY(gameID, teamID), FOREIGN KEY (gameID) REFERENCES Games(gameID) ON DELETE CASCADE, FOREIGN KEY (teamID) REFERENCES Teams(teamID) ON DELETE CASCADE)");
+
+
 
         }
         catch (Exception e){
@@ -238,14 +235,11 @@ public class TableFiller {
                         tournamentDate[i] + "', '%Y-%m-%d')" + ");");
             }
 
-
             //teams
             for (int i = 0; i < teamNames.length; i++) {
                 instruction.execute("INSERT INTO TEAMS (name, location, wins, losses, coachID) values ('" +
                         teamNames[i] + "', '" + teamLocations[i] + "', " + teamWins[i] + ", " + teamLosses[i] +
                         ", " + teamCoachID[i] + ")");
-
-
             }
 
             //players and games
@@ -258,7 +252,6 @@ public class TableFiller {
                 instruction.execute("INSERT INTO GAMES (score, startTime, endTime, tournamentID) values ('" +
                         gameScore[i] + "', TIME('" + gameStartTime[i] + "'), TIME('" + gameEndTime[i] +
                         "'), " + gameTournamentID[i] + ")");
-
             }
 
             for (int i = 0; i < playGameID.length; i++) {

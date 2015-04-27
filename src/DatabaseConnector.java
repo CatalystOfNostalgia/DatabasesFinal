@@ -13,9 +13,9 @@ public class DatabaseConnector {
     private static final String DATABASE_NAME = "FrisbeeTest";
     private static final String DRIVER = "com.mysql.jdbc.Driver"; /*JDBC driver for mysql*/
     private static final String SERVER = "jdbc:mysql://localhost:3306/" + DATABASE_NAME + "?zeroDateTimeBehavior=convertToNull";
-    private static final String GUEST = "user";
+    private static final String GUEST = "guest";
     private static final String GUESTPASS ="password";
-    private static final String ADMIN = "user";
+    private static final String ADMIN = "guest";
     private static final String ADMINPASS = "password";
     private USERTYPE type;
 
@@ -23,17 +23,17 @@ public class DatabaseConnector {
     private Statement statement2;
 
     public DatabaseConnector(USERTYPE user) throws Exception{
-            this.type = user;
-            Class.forName(DRIVER);
-            Connection conn;
-            if(user == USERTYPE.GUEST){
-                conn = DriverManager.getConnection(SERVER, GUEST, GUESTPASS);
-            }else{
-                conn = DriverManager.getConnection(SERVER, ADMIN, ADMINPASS);
-            }
+        this.type = user;
+        Class.forName(DRIVER);
+        Connection conn;
+        if(user == USERTYPE.GUEST){
+            conn = DriverManager.getConnection(SERVER, GUEST, GUESTPASS);
+        }else{
+            conn = DriverManager.getConnection(SERVER, ADMIN, ADMINPASS);
+        }
 
-            statement = conn.createStatement();
-            statement2 = conn.createStatement();
+        statement = conn.createStatement();
+        statement2 = conn.createStatement();
     }
 
     /*
@@ -41,26 +41,26 @@ public class DatabaseConnector {
         Give "*" to retrieve all stats for all teams
      */
     public ResultSet getTeam(String s) throws Exception{
-            ResultSet rs;
-            String query = "Select * from Teams where teamID = \'" + s + "\'";
-            if(s.equals("*")){
-                query = "Select * from Teams";
-            }
-            rs = statement.executeQuery(query);
-            return rs;
+        ResultSet rs;
+        String query = "Select * from Teams where teamID = \'" + s + "\'";
+        if(s.equals("*")){
+            query = "Select * from Teams";
+        }
+        rs = statement.executeQuery(query);
+        return rs;
     }
 
     /*
         Gets the players
     * */
     public ResultSet getPlayer(String s) throws Exception{
-            ResultSet rs;
-            String query = "Select * from Players where playerID = \'" + s + "\'";
-            if(s.equals("*")){
-                query = "Select * from Players";
-            }
-            rs = statement.executeQuery(query);
-            return rs;
+        ResultSet rs;
+        String query = "Select * from Players where playerID = \'" + s + "\'";
+        if(s.equals("*")){
+            query = "Select * from Players";
+        }
+        rs = statement.executeQuery(query);
+        return rs;
     }
 
     /*
@@ -75,15 +75,15 @@ public class DatabaseConnector {
         Use * to return the entire table
      */
     public ResultSet getCoach(String s) throws Exception{
-            ResultSet rs;
-            //Select a given coach
-            String query = "Select * from Coaches where coachID = \'" + s + "\'";
-            //Special case handling
-            if(s.equals("*")){
-                query = "Select * from Coaches";
-            }
-            rs = statement.executeQuery(query);
-            return rs;
+        ResultSet rs;
+        //Select a given coach
+        String query = "Select * from Coaches where coachID = \'" + s + "\'";
+        //Special case handling
+        if(s.equals("*")){
+            query = "Select * from Coaches";
+        }
+        rs = statement.executeQuery(query);
+        return rs;
     }
 
     /*
@@ -91,13 +91,13 @@ public class DatabaseConnector {
         User * to return the entire table
      */
     public ResultSet getTournament(String s) throws Exception{
-            ResultSet rs;
-            String query = "Select * from tournaments where tournamentID = \'" + s + "\'";
-            if(s.equals("*")){
-                query = "Select * from tournaments";
-            }
-            rs = statement.executeQuery(query);
-            return rs;
+        ResultSet rs;
+        String query = "Select * from tournaments where tournamentID = \'" + s + "\'";
+        if(s.equals("*")){
+            query = "Select * from tournaments";
+        }
+        rs = statement.executeQuery(query);
+        return rs;
     }
 
     /*
@@ -105,55 +105,55 @@ public class DatabaseConnector {
         Use * to get the entire table
      */
     public ResultSet getGame(String s) throws Exception{
-            ResultSet rs;
-            String query = "Select * from games where gameid = \'" + s + "\'";
-            if(s.equals("*")){
-                query = "Select * from games";
-            }
-            rs = statement.executeQuery(query);
-            return rs;
+        ResultSet rs;
+        String query = "Select * from games where gameid = \'" + s + "\'";
+        if(s.equals("*")){
+            query = "Select * from games";
+        }
+        rs = statement.executeQuery(query);
+        return rs;
     }
 
     public ResultSet participatesIn(String game, String player) throws Exception{
-            String query;
-            if(game == null && player == null){
-                query = "Select * from participatesin";
-            }
-            else if(player == null){
-                query = "Select * from participatesin where gameid = \'" + game + "\'";
-            }
-            else if(game == null){
-                query = "Select * from participatesin where playerid = \'" + player + "\'";
-            }
-            else{
-                query = "SELECT * FROM participatesin";
-                //query = "Select * from participatesin where gameid = \'" + game + "\' and playerid = \'" + player + "\'";
-            }
-            return statement.executeQuery(query);
+        String query;
+        if(game == null && player == null){
+            query = "Select * from participatesin";
+        }
+        else if(player == null){
+            query = "Select * from participatesin where gameid = \'" + game + "\'";
+        }
+        else if(game == null){
+            query = "Select * from participatesin where playerid = \'" + player + "\'";
+        }
+        else{
+            query = "SELECT * FROM participatesin";
+            //query = "Select * from participatesin where gameid = \'" + game + "\' and playerid = \'" + player + "\'";
+        }
+        return statement.executeQuery(query);
     }
 
     /**
      * Queries the playin relation
      * @param game      the game we want to find
-     * @param team    the team we are interested in
+     * @param player    the player we are interested in
      * @return          the result of the query
      * @throws Exception
      */
-    public ResultSet playIn(String game, String team) throws Exception{
-            String query;
-            if(team == null && game == null){
-                query = "Select * from playIn";
-            }
-            else if(game == null){
-                query = "Select * from playIn where teamid = \'" + team + "\'";
-            }
-            else if(team == null){
-                query = "Select * from playIn where gameID = \'" + game + "\'";
-            }
-            else{
-                query = "SELECT * FROM playIn where teamid = \'" + team + "\' and gameID = \'" + game + "\'";
-            }
-            return statement.executeQuery(query);
+    public ResultSet playIn(String game, String player) throws Exception{
+        String query;
+        if(game == null && player == null){
+            query = "Select * from participateIn";
+        }
+        else if(player == null){
+            query = "Select * from participateIn where gameid = \'" + game + "\'";
+        }
+        else if(game == null){
+            query = "Select * from participateIn where playerID = \'" + player + "\'";
+        }
+        else{
+            query = "SELECT * FROM participateIn where gameid = \'" + game + "\' and playerid = \'" + player + "\'";
+        }
+        return statement.executeQuery(query);
     }
 
     /**
@@ -163,14 +163,14 @@ public class DatabaseConnector {
      * @throws Exception
      */
     public ResultSet topNStat(int n, String stat) throws Exception{
-            String number = Integer.toString(n);
-            String query = "SELECT SUM(PI." + stat + ") AS " + stat +", P.name \n" +
-                    "FROM ParticipatesIn AS PI, Players AS P \n" +
-                    "WHERE P.playerID = PI.playerID \n" +
-                    "GROUP BY P.name\n" +
-                    "ORDER BY SUM(PI." + stat + ") desc\n" +
-                    "LIMIT " + number;
-            return statement.executeQuery(query);
+        String number = Integer.toString(n);
+        String query = "SELECT SUM(PI." + stat + ") AS " + stat +", P.name \n" +
+                "FROM ParticipatesIn AS PI, Players AS P \n" +
+                "WHERE P.playerID = PI.playerID \n" +
+                "GROUP BY P.name\n" +
+                "ORDER BY SUM(PI." + stat + ") desc\n" +
+                "LIMIT " + number;
+        return statement.executeQuery(query);
     }
 
     /**
@@ -180,12 +180,12 @@ public class DatabaseConnector {
      * @return  The n teams with the best record
      */
     public ResultSet bestRecords(int n) throws Exception{
-            String number = Integer.toString(n);
-            String query = "SELECT T.wins-T.Losses, T.name\n" +
-                    "FROM Teams AS T\n" +
-                    "ORDER BY T.wins-T.losses desc\n" +
-                    "LIMIT " + number;
-            return statement.executeQuery(query);
+        String number = Integer.toString(n);
+        String query = "SELECT T.wins - T.Losses, T.name\n" +
+                "FROM Teams AS T\n" +
+                "ORDER BY T.wins - T.losses desc\n" +
+                "LIMIT " + number;
+        return statement.executeQuery(query);
     }
 
     /**
@@ -195,15 +195,15 @@ public class DatabaseConnector {
      * @return          The n teams with the best stat stat
      */
     public ResultSet bestTeamsStats(int n, String stat) throws Exception{
-            String number = Integer.toString(n);
-            String query = "SELECT \tSUM(PI." + stat +") AS " + stat + ", T.name\n" +
-                    "FROM \tTeams AS T, Players AS P, ParticipatesIn AS PI\n" +
-                    "WHERE \tT.teamID = P.teamID AND\n" +
-                    "\t\tPI.playerID = P.playerID\n" +
-                    "GROUP BY T.name\n" +
-                    "ORDER BY SUM(PI.pointsPlayed) desc\n" +
-                    "LIMIT " + number;
-            return statement.executeQuery(query);
+        String number = Integer.toString(n);
+        String query = "SELECT \tSUM(PI." + stat +") AS " + stat + ", T.name\n" +
+                "FROM \tTeams AS T, Players AS P, ParticipatesIn AS PI\n" +
+                "WHERE \tT.teamID = P.teamID AND\n" +
+                "\t\tPI.playerID = P.playerID\n" +
+                "GROUP BY T.name\n" +
+                "ORDER BY SUM(PI.pointsPlayed) desc\n" +
+                "LIMIT " + number;
+        return statement.executeQuery(query);
     }
 
     /**
@@ -212,102 +212,136 @@ public class DatabaseConnector {
      * @return      all the stats for the players on team
      */
     public ResultSet statsForPlayersOnTeam(String team) throws Exception{
-            String query = "SELECT P.name, SUM(PI.drops) AS Drops, SUM(PI.assists) AS Assists, SUM(PI.goals) AS Goals, SUM(PI.pointsPlayed) AS PointsPlayed, SUM(PI.throwaways) AS Throwaways\n" +
-                    "FROM Players AS P, Teams AS T, ParticipatesIn AS PI\n" +
-                    "Where T.teamId = \'"+ team + "\'AND P.teamId = T.teamId AND PI.playerId = P.playerId\n" +
-                    "GROUP BY P.playerId" ;
-            return statement.executeQuery(query);
+        String query = "SELECT P.name, SUM(PI.drops) AS Drops, SUM(PI.assists) AS Assists, SUM(PI.goals) AS Goals, SUM(PI.pointsPlayed) AS PointsPlayed, SUM(PI.throwaways) AS Throwaways\n" +
+                "FROM Players AS P, Teams AS T, ParticipatesIn AS PI\n" +
+                "Where T.teamId = \'"+ team + "\'AND P.teamId = T.teamId AND PI.playerId = P.playerId\n" +
+                "GROUP BY P.playerId" ;
+        return statement.executeQuery(query);
     }
 
     public ResultSet statsForPlayer(String player) throws Exception{
-            String query = "SELECT P.name, P.playerId, SUM(PI.drops) AS Drops, SUM(PI.assists) AS Assists, SUM(PI.goals) AS Goals, \n" +
-                    "SUM(PI.pointsPlayed) AS PointsPlayed, SUM(PI.throwaways) AS Throwaways\n" +
-                    "FROM Players P, ParticipatesIn PI\n" +
-                    "WHERE P.playerID = \'"+ player +"\'AND\n" +
-                    "PI.playerID = P.playerID ";
-            return statement.executeQuery(query);
+        String query = "SELECT P.name, P.playerId, SUM(PI.drops) AS Drops, SUM(PI.assists) AS Assists, SUM(PI.goals) AS Goals, \n" +
+                "SUM(PI.pointsPlayed) AS PointsPlayed, SUM(PI.throwaways) AS Throwaways\n" +
+                "FROM Players P, ParticipatesIn PI\n" +
+                "WHERE P.playerID = \'"+ player +"\'AND\n" +
+                "PI.playerID = P.playerID ";
+        return statement.executeQuery(query);
     }
 
     public ResultSet statsForTeam(String team) throws Exception{
-            String query = "SELECT SUM(drops) AS Drops, SUM(assists) AS Assists, SUM(goals) AS Goals, SUM(pointsPlayed) AS PointsPlayed, SUM(throwaways) AS Throwaways\n" +
-                    "FROM (\tSELECT \tP.name, PI.playerID, SUM(PI.drops) AS drops, SUM(PI.assists) AS assists, SUM(PI.goals) AS goals, SUM(PI.pointsPlayed) AS pointsPlayed, SUM(throwaways) AS throwaways\n" +
-                    "FROM \tPlayers P, Teams T, ParticipatesIn PI\n" +
-                    "WHERE \tP.teamID = T.teamID AND\n" +
-                    "P.playerID = PI.playerID AND\n" +
-                    "T.teamID =" + team +"\n " +
-                    "GROUP BY PI.playerID) AS A";
-            return statement.executeQuery(query);
+        String query = "SELECT SUM(drops) AS Drops, SUM(assists) AS Assists, SUM(goals) AS Goals, SUM(pointsPlayed) AS PointsPlayed, SUM(throwaways) AS Throwaways\n" +
+                "FROM (\tSELECT \tP.name, PI.playerID, SUM(PI.drops) AS drops, SUM(PI.assists) AS assists, SUM(PI.goals) AS goals, SUM(PI.pointsPlayed) AS pointsPlayed, SUM(throwaways) AS throwaways\n" +
+                "FROM \tPlayers P, Teams T, ParticipatesIn PI\n" +
+                "WHERE \tP.teamID = T.teamID AND\n" +
+                "P.playerID = PI.playerID AND\n" +
+                "T.teamID =" + team +"\n " +
+                "GROUP BY PI.playerID) AS A";
+        return statement.executeQuery(query);
     }
 
     public ResultSet statsForGame(String team, String game) throws Exception{
-            String query = "SELECT T.name, SUM(PI.drops) AS Drops, SUM(PI.assists) AS Assists, SUM(PI.goals) AS Goals, SUM(PI.pointsPlayed) AS PointsPlayed, SUM(throwaways) AS Throwaways\n" +
-                    "FROM Players P, Teams T, ParticipatesIn PI, Games G\n" +
-                    "WHERE G.gameID = \'" + game +"\' and T.teamID = \'" +  team +"\'and PI.gameID = G.gameId and P.teamID = T.teamID and PI.playerID = P.playerID\n" +
-                    "GROUP BY T.teamID\n";
-            return statement.executeQuery(query);
+        String query = "SELECT T.name, SUM(PI.drops) AS Drops, SUM(PI.assists) AS Assists, SUM(PI.goals) AS Goals, SUM(PI.pointsPlayed) AS PointsPlayed, SUM(throwaways) AS Throwaways\n" +
+                "FROM Players P, Teams T, ParticipatesIn PI, Games G\n" +
+                "WHERE G.gameID = \'" + game +"\' and T.teamID = \'" +  team +"\'and PI.gameID = G.gameId and P.teamID = T.teamID and PI.playerID = P.playerID\n" +
+                "GROUP BY T.teamID\n";
+        return statement.executeQuery(query);
     }
 
     public ResultSet playersAboveThreshold(String stat, int threshold) throws Exception{
-            String thresholdString = Integer.toString(threshold);
-            String query = "SELECT P.name, SUM(PI." + stat+") AS " + stat + "\n" +
-                    "FROM players AS P, ParticipatesIn AS PI\n" +
-                    "WHERE P.playerID = PI.playerID\n" +
-                    "GROUP BY P.name\n" +
-                    "HAVING SUM(PI." + stat +") > " + thresholdString + "\n" +
-                    "ORDER BY SUM(PI."+ stat +") desc\n";
-            return statement.executeQuery(query);
+        String thresholdString = Integer.toString(threshold);
+        String query = "SELECT P.name, SUM(PI." + stat+") AS " + stat + "\n" +
+                "FROM players AS P, ParticipatesIn AS PI\n" +
+                "WHERE P.playerID = PI.playerID\n" +
+                "GROUP BY P.name\n" +
+                "HAVING SUM(PI." + stat +") > " + thresholdString + "\n" +
+                "ORDER BY SUM(PI."+ stat +") desc\n";
+        return statement.executeQuery(query);
     }
-
 
     //returns only 0s for everyone right now
     public ResultSet yearsPlayed() throws Exception{
-            return statement.executeQuery("SELECT DISTINCT PY.playerID, PY.name, MAX(PY.year ) - MIN(PY.year) AS yearsPlayed\n" +
-                    "FROM (SELECT P.playerID, P.name, YEAR(T.tournamentDate) AS year\n" +
-                    "FROM Players P, ParticipatesIn PI, Games G, Tournaments T\n" +
-                    "WHERE P.playerID = PI.playerID AND \n" +
-                    "PI.gameID = G.gameID AND G.tournamentID = T.tournamentID) AS PY\n" +
-                    "GROUP BY PY.playerID");
+        return statement.executeQuery("SELECT DISTINCT PY.playerID, PY.name, MAX(PY.year ) - MIN(PY.year) AS yearsPlayed\n" +
+                "FROM (SELECT P.playerID, P.name, YEAR(T.tournamentDate) AS year\n" +
+                "FROM Players P, ParticipatesIn PI, Games G, Tournaments T\n" +
+                "WHERE P.playerID = PI.playerID AND \n" +
+                "PI.gameID = G.gameID AND G.tournamentID = T.tournamentID) AS PY\n" +
+                "GROUP BY PY.playerID");
     }
 
     public ResultSet playerComparison(String player1, String player2) throws Exception{
-            return statement.executeQuery("SELECT \tPL1.name, SUM(P1.drops) AS Drops, SUM(P1.assists) AS Assists, SUM(P1.goals) AS Goals, SUM(P1.pointsPlayed) AS PointsPlayed, \n" +
-                    "   \t\tSUM(P1.throwaways) AS Throwaways, PL2.name, SUM(P2.drops) AS Drops, SUM(P2.assists) AS Assists, SUM(P2.goals) AS Goals,   \n" +
-                    "   \t\tSUM(P2.pointsPlayed) AS PointsPlayed, SUM(P2.throwaways) AS Throwaways\n" +
-                    "FROM \tPlayers PL1, Players PL2, ParticipatesIn P1, ParticipatesIn P2\n" +
-                    "WHERE \tPL1.playerID = P1.playerID AND\n" +
-                    "\t\tPL2.playerID = P2.playerID AND\n" +
-                    "        PL1.playerID = 1 AND\n" +
-                    "        PL2.playerID = 2\n");
+        return statement.executeQuery("SELECT \tPL1.name, SUM(P1.drops) AS Drops, SUM(P1.assists) AS Assists, SUM(P1.goals) AS Goals, SUM(P1.pointsPlayed) AS PointsPlayed, \n" +
+                "   \t\tSUM(P1.throwaways) AS Throwaways, PL2.name, SUM(P2.drops) AS Drops, SUM(P2.assists) AS Assists, SUM(P2.goals) AS Goals,   \n" +
+                "   \t\tSUM(P2.pointsPlayed) AS PointsPlayed, SUM(P2.throwaways) AS Throwaways\n" +
+                "FROM \tPlayers PL1, Players PL2, ParticipatesIn P1, ParticipatesIn P2\n" +
+                "WHERE \tPL1.playerID = P1.playerID AND\n" +
+                "\t\tPL2.playerID = P2.playerID AND\n" +
+                "        PL1.playerID = 1 AND\n" +
+                "        PL2.playerID = 2\n");
     }
 
     public ResultSet teamsSharingLoc() throws Exception{
-            return statement.executeQuery("SELECT T1.name, T2.name, T1.location\n" +
-                    "FROM Teams T1, Teams T2\n" +
-                    "WHERE T1.location = T2.location AND\n" +
-                    "T1.teamID <> T2.teamID\n" +
-                    "GROUP BY T1.location\n");
+        return statement.executeQuery("SELECT T1.name, T2.name, T1.location\n" +
+                "FROM Teams T1, Teams T2\n" +
+                "WHERE T1.location = T2.location AND\n" +
+                "T1.teamID <> T2.teamID\n" +
+                "GROUP BY T1.location\n");
     }
 
     public ResultSet gamesInTourney(String tourney) throws Exception{
-            String query = "SELECT G.gameID, T2.name, T3.name\n" +
-                    "FROM Tournaments T1, Games G, PlayIn P1, PlayIn P2, Teams T2, Teams T3\n" +
-                    "WHERE T1.tournamentID = G.tournamentID AND\n" +
-                    "T1.tournamentID = \'"+ tourney +"\' AND\n" +
-                    "P1.gameID = G.gameID AND\n" +
-                    "P2.gameId = G.gameID AND\n" +
-                    "T2.teamID = P2.teamID AND\n" +
-                    "T3.teamId = P1.teamID AND\n" +
-                    "T2.teamID <> T3.teamID AND\n" +
-                    "T2.teamID < T3.teamID\n";
-            return statement.executeQuery(query);
+        String query = "SELECT G.gameID, T2.name, T3.name\n" +
+                "FROM Tournaments T1, Games G, PlayIn P1, PlayIn P2, Teams T2, Teams T3\n" +
+                "WHERE T1.tournamentID = G.tournamentID AND\n" +
+                "T1.tournamentID = \'"+ tourney +"\' AND\n" +
+                "P1.gameID = G.gameID AND\n" +
+                "P2.gameId = G.gameID AND\n" +
+                "T2.teamID = P2.teamID AND\n" +
+                "T3.teamId = P1.teamID AND\n" +
+                "T2.teamID <> T3.teamID AND\n" +
+                "T2.teamID < T3.teamID\n";
+        return statement.executeQuery(query);
     }
 
     public ResultSet tournamentsOnSameDay() throws Exception{
-            String query = "SELECT T1.name, T2.name\n" +
-                    "FROM Tournaments T1, Tournaments T2\n" +
-                    "WHERE T1. tournamentID <> T2.tournamentID AND\n" +
-                    "T1.tournamentDate = T2.tournamentDate";
-            return statement.executeQuery(query);
+        String query = "SELECT T1.name, T2.name\n" +
+                "FROM Tournaments T1, Tournaments T2\n" +
+                "WHERE T1. tournamentID <> T2.tournamentID AND\n" +
+                "T1.tournamentDate = T2.tournamentDate";
+        return statement.executeQuery(query);
+    }
+
+    public ResultSet retiredPlayers() throws Exception{
+        return statement.executeQuery(  "SELECT Players.playerID, players.name " +
+                                        "FROM Players " +
+                                        "WHERE Players.playerID NOT IN  (SELECT  P1.playerID " +
+                                                                        "FROM    ParticipatesIn P1, ParticipatesIn P2, Games G1, Games G2, Tournaments T1, Tournaments T2 " +
+                                                                        "WHERE   P1.playerID = P2.playerID AND " +
+                                                                                "P1.gameID = G1.gameID AND " +
+                                                                                "P2.gameID = G2.gameID AND " +
+                                                                                "G1.tournamentID = T1.tournamentID AND " +
+                                                                                "G2.tournamentID = T2.tournamentID AND " +
+                                                                                "T1.tournamentID <> T2.tournamentID AND " +
+                                                                                "ABS(DATEDIFF(T1.tournamentDate, T2.tournamentDate)) < 365)");
+    }
+
+    public ResultSet teamsAllTournaments() throws Exception{
+        return statement.executeQuery(  "SELECT Team.name, Team.teamID " +
+                                        "FROM   (SELECT Team.name AS name, PlayIn.teamID AS teamID, COUNT(DISTINCT Games.tournamentID) AS tournaments " +
+                                                "FROM   Games, PlayIn, Teams " +
+                                                "WHERE  Games.gameID = PlayIn.gameID AND " +
+                                                       "Teams.teamID = PlayIn.teamID " +
+                                                "GROUP BY PlayIn.teamID) AS TournamentsPlayed, " +
+                                               "(SELECT COUNT(Tournaments.tournamentID) " +
+                                                "FROM Tournaments) AS totalTournaments " +
+                                        "WHERE tournaments = totalTournaments");
+    }
+
+    public ResultSet playersOnlyOnOneTeam() throws Exception{
+        return statement.executeQuery(  "SELECT Players.playerID, Players.name " +
+                                        "FROM   Players " +
+                                        "WHERE Player.playerID NOT IN   (SELECT ParticipatesIn.playerID " +
+                                                                        "FROM   ParticipatesIn AS P1, ParticipatesIn AS P2 " +
+                                                                        "WHERE  P1.teamID <> P2.teamID AND " +
+                                                                        "P1.playerID = P2.playerID)");
     }
 
     /**
@@ -315,7 +349,6 @@ public class DatabaseConnector {
      * @param name      the name of the player
      * @param position  the position of the player
      * @param teamID    the team the player is on
-     * @return          if the query was successful
      */
     public void insertPlayer(String name, String position, int teamID) throws Exception{
         statement.execute("INSERT INTO PLAYERS (name, position, teamID) values (" +

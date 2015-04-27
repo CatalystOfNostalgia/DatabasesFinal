@@ -2209,7 +2209,7 @@ public class QueryGUI extends JFrame {
 
         try{
             database = new DatabaseConnector(DatabaseConnector.USERTYPE.GUEST);
-            ResultSet rs = database.playIn("*", "*");
+            ResultSet rs = database.playIn(null, null);
             DefaultListModel model = getListInfo(rs);
 
             JList queryResult = new JList(model);

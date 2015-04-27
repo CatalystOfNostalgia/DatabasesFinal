@@ -196,7 +196,7 @@ public class TableFiller {
             Statement instruction = con.createStatement();
 
             //drop things in case they already exist
-            instruction.execute("DROP DATABASE FrisbeeTest");
+            //instruction.execute("DROP DATABASE FrisbeeTest");
 
             instruction.execute("CREATE DATABASE FrisbeeTest");
             instruction.execute("USE FrisbeeTest");

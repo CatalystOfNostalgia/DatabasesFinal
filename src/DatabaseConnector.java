@@ -135,23 +135,23 @@ public class DatabaseConnector {
     /**
      * Queries the playin relation
      * @param game      the game we want to find
-     * @param player    the player we are interested in
+     * @param team    the team we are interested in
      * @return          the result of the query
      * @throws Exception
      */
-    public ResultSet playIn(String game, String player) throws Exception{
+    public ResultSet playIn(String game, String team) throws Exception{
             String query;
-            if(game == null && player == null){
-                query = "Select * from participateIn";
-            }
-            else if(player == null){
-                query = "Select * from participateIn where gameid = \'" + game + "\'";
+            if(team == null && game == null){
+                query = "Select * from playIn";
             }
             else if(game == null){
-                query = "Select * from participateIn where playerID = \'" + player + "\'";
+                query = "Select * from playIn where teamid = \'" + team + "\'";
+            }
+            else if(team == null){
+                query = "Select * from playIn where gameID = \'" + game + "\'";
             }
             else{
-                query = "SELECT * FROM participateIn where gameid = \'" + game + "\' and playerid = \'" + player + "\'";
+                query = "SELECT * FROM playIn where teamid = \'" + team + "\' and gameID = \'" + game + "\'";
             }
             return statement.executeQuery(query);
     }
@@ -181,9 +181,9 @@ public class DatabaseConnector {
      */
     public ResultSet bestRecords(int n) throws Exception{
             String number = Integer.toString(n);
-            String query = "SELECT T.wins/T.Losses, T.name\n" +
+            String query = "SELECT T.wins-T.Losses, T.name\n" +
                     "FROM Teams AS T\n" +
-                    "ORDER BY T.wins/T.losses desc\n" +
+                    "ORDER BY T.wins-T.losses desc\n" +
                     "LIMIT " + number;
             return statement.executeQuery(query);
     }

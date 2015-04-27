@@ -1,5 +1,3 @@
-import sun.reflect.annotation.ExceptionProxy;
-
 import java.sql.*;
 
 /**
@@ -8,7 +6,7 @@ import java.sql.*;
  * Use these to access and edit the RDBMS
  */
 public class DatabaseConnector {
-    public enum USERTYPE{GUEST, ADMIN}; /*The types of user for our database*/
+    public enum USERTYPE{GUEST, ADMIN} /*The types of user for our database*/
 
     private static final String DATABASE_NAME = "FrisbeeTest";
     private static final String DRIVER = "com.mysql.jdbc.Driver"; /*JDBC driver for mysql*/
@@ -142,16 +140,16 @@ public class DatabaseConnector {
     public ResultSet playIn(String game, String player) throws Exception{
         String query;
         if(game == null && player == null){
-            query = "Select * from participateIn";
+            query = "Select * from participatesIn";
         }
         else if(player == null){
-            query = "Select * from participateIn where gameid = \'" + game + "\'";
+            query = "Select * from participatesIn where gameid = \'" + game + "\'";
         }
         else if(game == null){
-            query = "Select * from participateIn where playerID = \'" + player + "\'";
+            query = "Select * from participatesIn where playerID = \'" + player + "\'";
         }
         else{
-            query = "SELECT * FROM participateIn where gameid = \'" + game + "\' and playerid = \'" + player + "\'";
+            query = "SELECT * FROM participatesIn where gameid = \'" + game + "\' and playerid = \'" + player + "\'";
         }
         return statement.executeQuery(query);
     }
@@ -268,15 +266,15 @@ public class DatabaseConnector {
                 "GROUP BY PY.playerID");
     }
 
-    public ResultSet playerComparison(String player1, String player2) throws Exception{
+    public ResultSet playerComparison(int player1, int player2) throws Exception{
         return statement.executeQuery("SELECT \tPL1.name, SUM(P1.drops) AS Drops, SUM(P1.assists) AS Assists, SUM(P1.goals) AS Goals, SUM(P1.pointsPlayed) AS PointsPlayed, \n" +
                 "   \t\tSUM(P1.throwaways) AS Throwaways, PL2.name, SUM(P2.drops) AS Drops, SUM(P2.assists) AS Assists, SUM(P2.goals) AS Goals,   \n" +
                 "   \t\tSUM(P2.pointsPlayed) AS PointsPlayed, SUM(P2.throwaways) AS Throwaways\n" +
                 "FROM \tPlayers PL1, Players PL2, ParticipatesIn P1, ParticipatesIn P2\n" +
                 "WHERE \tPL1.playerID = P1.playerID AND\n" +
                 "\t\tPL2.playerID = P2.playerID AND\n" +
-                "        PL1.playerID = 1 AND\n" +
-                "        PL2.playerID = 2\n");
+                "        PL1.playerID = "+ player1 + " AND\n" +
+                "        PL2.playerID = "+ player2 + "\n");
     }
 
     public ResultSet teamsSharingLoc() throws Exception{
@@ -324,15 +322,15 @@ public class DatabaseConnector {
     }
 
     public ResultSet teamsAllTournaments() throws Exception{
-        return statement.executeQuery(  "SELECT Team.name, Team.teamID " +
-                                        "FROM   (SELECT Team.name AS name, PlayIn.teamID AS teamID, COUNT(DISTINCT Games.tournamentID) AS tournaments " +
+        return statement.executeQuery(  "SELECT Teams.name, Teams.teamID " +
+                                        "FROM   (SELECT Teams.name AS name, PlayIn.teamID AS teamID, COUNT(DISTINCT Games.tournamentID) AS tournaments " +
                                                 "FROM   Games, PlayIn, Teams " +
                                                 "WHERE  Games.gameID = PlayIn.gameID AND " +
                                                        "Teams.teamID = PlayIn.teamID " +
                                                 "GROUP BY PlayIn.teamID) AS TournamentsPlayed, " +
-                                               "(SELECT COUNT(Tournaments.tournamentID) " +
+                                               "(SELECT COUNT(Tournaments.tournamentID) AS tournamentsPlayed " +
                                                 "FROM Tournaments) AS totalTournaments " +
-                                        "WHERE tournaments = totalTournaments");
+                                        "WHERE tournaments = totalTournaments.tournamentsPlayed");
     }
 
     public ResultSet playersOnlyOnOneTeam() throws Exception{
@@ -435,7 +433,7 @@ public class DatabaseConnector {
     }
 
     public void updatePlayer(int playerID, String name, String position, int teamID) throws Exception{
-        String updatePlayer = "UPDATE players SET name = \'" + name + "\', teamID = " + teamID + " WHERE playerID = " + playerID;
+        String updatePlayer = "UPDATE players SET name = \'" + name + "\', teamID = " + teamID + " position = " + position.toLowerCase() + " WHERE playerID = " + playerID;
         statement.executeUpdate(updatePlayer);
     }
 

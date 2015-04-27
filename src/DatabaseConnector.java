@@ -421,7 +421,7 @@ public class DatabaseConnector {
     /*
     * Utility function for iterating through a result set. Outputs to commandline for now though.
     * */
-    public static void getResults(ResultSet rs){
+    /*public static void getResults(ResultSet rs){
         try {
             ResultSetMetaData mdata = rs.getMetaData();
             //Loops through the rows of the output
@@ -437,6 +437,6 @@ public class DatabaseConnector {
         catch(SQLException e){
             System.out.println(e.toString());
         }
-    }
+    } */
 
 }
